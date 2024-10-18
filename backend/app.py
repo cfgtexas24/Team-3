@@ -1,13 +1,19 @@
-from flask import Flask, jsonify, request
+from flask import Flask
+from flask_socketio import SocketIO
+from flask_cors import CORS
 
-# Initialize Flask app
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Route for the home page
 @app.route('/')
-def home():
-    return "Welcome to the Flask Backend!"
+def index():
+    return "Socket.IO Server Running!"
 
-# Run the app on port 5000
-if __name__ == "__main__":
-    app.run(debug=True)
+@socketio.on('message')
+def handle_message(msg):
+    print('Message received: ' + msg)
+    socketio.send(msg)  # Echo the message back to the client
+
+if __name__ == '__main__':
+    socketio.run(app, debug=True)

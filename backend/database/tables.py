@@ -24,13 +24,12 @@ class Mentor(Base):
     ssn = Column(Integer)
     username = Column(String, unique = True)
     password = Column(String, unique = True)
-    screened = Colun(Boolean) 
+    screened = Column(Boolean) 
     email = relationship(
         'Email',
         secondary = mentor_email_association,
         back_populates='mentors'
     )
-
     chats = relationship(
         'Chat',
         secondary=mentor_chat_association,
@@ -40,6 +39,11 @@ class Mentor(Base):
 
 class Emergency(Base):
     __tablename__ = 'emergency'
+    id = Column(Integer, primary_key= True)
+    name = Column(String)
+    caller_phone_num = Column(Integer)
+    staff_phone_num = Column(Integer)
+    message = Column(String)
 
 
 

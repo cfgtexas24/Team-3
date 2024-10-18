@@ -24,6 +24,7 @@ class Mentor(Base):
     ssn = Column(Integer)
     username = Column(String, unique = True)
     password = Column(String, unique = True)
+    screened = Colun(Boolean) 
     email = relationship(
         'Email',
         secondary = mentor_email_association,

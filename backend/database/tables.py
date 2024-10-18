@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -47,6 +47,13 @@ class Mentee(Base):
     __tablename__ = 'mentees'
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    mentored = Column(Boolean)
+    sheltered = Column(Boolean)
+    email = Column(String)
+    age = Column(Integer)
+    username = Column(String, unique=True)
+    password = Column(String, unique=True)
+    screened = Column(Boolean)
 
     chats = relationship(
         'Chat',

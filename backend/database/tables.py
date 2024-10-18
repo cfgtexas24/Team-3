@@ -20,12 +20,28 @@ class Mentor(Base):
     __tablename__ = 'mentors'
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    phone_num = Column(Integer)
+    ssn = Column(Integer)
+    username = Column(String, unique = True)
+    password = Column(String, unique = True)
+    screened = Column(Boolean) 
+    email = relationship(
+        'Email',
+        secondary = mentor_email_association,
+        back_populates='mentors'
+    )
 
     chats = relationship(
         'Chat',
         secondary=mentor_chat_association,
         back_populates='mentors'
     )
+
+
+class Emergency(Base):
+    __tablename__ = 'emergency'
+
+
 
 class Mentee(Base):
     __tablename__ = 'mentees'

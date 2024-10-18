@@ -16,6 +16,12 @@ mentee_chat_association = Table(
     Column('chat_id', Integer, ForeignKey('chats.id'), primary_key=True)
 )
 
+mentor_email_association = Table(
+    'mentor_email', Base.metadata,
+    Column('mentor_id', Integer, ForeignKey('mentors.id'), primary_key=True),
+    Column('emailID', String, ForeignKey('emails.emailID'), primary_key=True)
+)
+
 class Mentor(Base):
     __tablename__ = 'mentors'
     id = Column(Integer, primary_key=True)
@@ -24,7 +30,7 @@ class Mentor(Base):
     ssn = Column(Integer)
     username = Column(String, unique = True)
     password = Column(String, unique = True)
-    screened = Colun(Boolean) 
+    screened = Column(Boolean) 
     email = relationship(
         'Email',
         secondary = mentor_email_association,
@@ -40,8 +46,6 @@ class Mentor(Base):
 
 class Emergency(Base):
     __tablename__ = 'emergency'
-
-
 
 class Mentee(Base):
     __tablename__ = 'mentees'
@@ -78,3 +82,12 @@ class Chat(Base):
         back_populates='chats'
     )
 
+class Email(Base):
+    __tablename__ = 'emails'
+    emailID = Column(String, primary_key=True)
+    
+    user_id = relationship(
+        'Mentor',
+        secondary=mentor_email_association,
+        backpopulates='email'
+    )

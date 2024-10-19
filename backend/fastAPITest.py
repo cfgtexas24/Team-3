@@ -50,3 +50,15 @@ async def get_chats(db: Session = Depends(get_db)):
 @app.get('/chat/{chat_id}')
 async def get_chat_by_id(chat_id: int, db: Session = Depends(get_db)):
     return crud.chat_get_one(db=db, chat_id=chat_id)
+
+@app.get('/email')
+async def get_email(email: str, db: Session = Depends(get_db)):
+    return crud.get_email(db=db, email=email)
+
+@app.get('/email/{email}')
+async def get_email_by_id(email: str, db: Session = Depends(get_db)):
+    return crud.get_email_by_id(db=db, email=email)
+
+@app.post('/email')
+async def create_email(email: str, db: Session = Depends(get_db)):
+    return crud.create_email(db=db, email=email)

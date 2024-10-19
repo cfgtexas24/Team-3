@@ -1,4 +1,4 @@
-import tables
+from . import tables
 from sqlalchemy.orm import Session
 
 # CRUD operations for mentor table creating a mentor

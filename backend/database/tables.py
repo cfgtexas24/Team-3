@@ -2,12 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-
-
-Base = declarative_base()
-
-# Declare database engine with Supabase URL, stored in local variable
-engine = create_engine('DATABASE_URI')
+from database.connections import engine, Base
 
 # Initializing all relationships in schema
 mentor_chat_association = Table(

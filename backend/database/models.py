@@ -58,15 +58,16 @@ class Mentee(BaseModel):
 
 class Chat(BaseModel):
    id: int
-   menteeid = int
-   mentorid = int
-   chat_log = str
+   menteeid: int
+   mentorid: int
+   chat_log: str
   
    class Config:
        orm_mode = True
+
 class Email(BaseModel):
-   emailid = int
-   admins = int
+   emailid: int
+   admins: int
 
 
    class Config:
@@ -74,8 +75,8 @@ class Email(BaseModel):
 
 
 class Notification(BaseModel):
-   id = int
-   message = str
+   id: int
+   message: str
 
 
    class Config:

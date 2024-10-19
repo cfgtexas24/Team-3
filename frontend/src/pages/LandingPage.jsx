@@ -77,12 +77,13 @@ const LandingPage = () => {
 
 export default LandingPage;*/
 // src/pages/LandingPage.jsx
+// src/pages/LandingPage.jsx
 
 import React from 'react';
 import FlipNavWrapper from '../components/navbar'; // Adjust the path if necessary
 import { SwipeCarousel } from '../components/swipe'; // Adjust the path if necessary
 import ScrollingTestimonials from '../components/ScrollingTestimonials'; // Adjust the path if necessary
-import BubbleText from '../components/BubbleText'; // Import the BubbleText component
+// import './LandingPage.css'; // Uncomment if you have a CSS file for custom styles
 
 const LandingPage = () => {
     return (
@@ -93,9 +94,7 @@ const LandingPage = () => {
             {/* Hero Section */}
             <header className="hero text-center mx-auto">
                 <h1 className="text-4xl mx-auto">Storm Center of Hope and Service</h1>
-                <h2 className="mx-auto">
-                    <BubbleText />
-                </h2>
+                <h2 className="mx-auto"></h2>
                 <p className="mx-auto">
                     Welcome to the Storm Center of Hope and Services! Our mission is to provide essential support and resources to individuals and families in need. We strive to create a nurturing environment that fosters hope, empowerment, and positive change.
                 </p>
@@ -156,4 +155,3 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-

@@ -148,19 +148,20 @@ const App = () => {
 
 export default App;*/
 // App.jsx
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React from 'react';
 import "./index.css";
 
 import LandingPage from './pages/LandingPage'; // Adjust the path if necessary
-import FMentor from './pages/FMentor'; // Import the updated component
+import FMentor from './pages/fMentor'; // Import the updated component
 
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/fMentor" element={<FMentor />} /> {/* Route to FMentor */}
+        <Route path="/fMentor" element={<FMentor />} /> {/* Route to FMentor *}
         {/* Add other routes here if needed */}
       </Routes>
     </Router>
@@ -168,7 +169,3 @@ const App = () => {
 };
 
 export default App;
-
-
-
-

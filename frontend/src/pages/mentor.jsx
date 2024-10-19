@@ -39,7 +39,7 @@ function Mentor() {
     console.log(data)
     // Logic to join the chat with the selected user
     console.log(`Joining chat with user: ${data.user.id}`);
-    socket.emit('leave_waiting_list', data.user.id);
+    socket.emit('leave_waiting_list', data);
     navigate("/chat", { state: { type: "mentor", conversationId: data.conversationId } });
   };
 

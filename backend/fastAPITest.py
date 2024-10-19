@@ -107,12 +107,12 @@ async def get_admins_by_username(username: str, db: Session = Depends(get_db)):
 
 @app.get('/bulletin')
 async def get_bulletin(db: Session = Depends(get_db)):
-    return crud.get_bulletin(db=db)
+    return crud.bulletin_get_all(db=db)
 
 @app.post('/bulletin')
 async def create_bulletin(bulletin: Bulletin, db: Session = Depends(get_db)):
-    return crud.create_bulletin(db=db, bulletin=bulletin)
+    return crud.bulletin_create(db=db, bulletin=bulletin)
 
 @app.delete('/bulletin/{bulletin_id}')
 async def delete_bulletin(bulletin_id: int, db: Session = Depends(get_db)):
-    return crud.delete_bulletin(db=db, bulletin_id=bulletin_id)
+    return crud.bulletin_delete(db=db, bulletin_id=bulletin_id)

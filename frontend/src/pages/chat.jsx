@@ -1,12 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import io from 'socket.io-client';
 
-import OllieAvatar from "../components/OllieAvatar";
+import StormAvatar from "../components/StormAvatar";
 import ChatBubble from "../components/ChatBubble";
 
 const ENDPOINT = 'http://localhost:5000';
 
 function App() {
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [socket, setSocket] = useState();
+
   useEffect(() => {
     const socket = io(ENDPOINT, {
       transports: ['websocket'],
@@ -16,20 +20,33 @@ function App() {
       }
     });
 
+    setSocket(socket);
+
     socket.on('connect', () => {
       console.log('Connected to Socket.IO server');
     });
 
+    // Update to handle admin and user messages separately
     socket.on('message', (msg) => {
       console.log('Message from server:', msg);
+      setMessages((prevMessages) => [...prevMessages, { text: msg, sender: 'server' }]); 
     });
-
-    socket.emit("message", "hello");
 
     return () => {
       socket.disconnect();
     };
   }, []);
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+    if (message) {
+      setMessages((prevMessages) => [...prevMessages, { text: message, sender: 'user' }]);  // Store the user message
+      socket.emit("message", message);  // Send user message to the server
+      setMessage('');  // Clear the input after sending
+    }
+  }
+
+  console.log(messages);
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
@@ -50,18 +67,31 @@ function App() {
         <main className="flex-1 flex flex-col">
           <div className="flex-1 overflow-y-auto p-4">
             <div className="flex items-center space-x-2 mb-4">
-              <OllieAvatar />
+              <StormAvatar />
               <ChatBubble isResponse={true}>
-                <p>Howdy! The STORM Center of Hope and Services supports individuals and families through counseling, education and community services. How can we help you!</p>
+                <p>Howdy! The STORM Center of Hope and Services supports individuals and families through counseling, education, and community services. How can we help you!</p>
               </ChatBubble>
             </div>
+
+            {/* Display dynamic messages */}
+            {messages.map((msg, index) => (
+              <div key={index} className={`flex items-center gap-x-2 mb-4 ${msg.sender === "user" ? "flex-row-reverse text-right" : ""}`}>
+                <StormAvatar />
+                <ChatBubble isResponse={true}>
+                  <p>{msg.text}</p>
+                </ChatBubble>
+              </div>
+            ))}
           </div>
 
-          <form className="p-4 border-t">
+          <form className="p-4 border-t" onSubmit={sendMessage}>
             <div className="flex items-center bg-white rounded-lg border">
               <input
                 type="text"
                 className="flex-1 p-3 bg-transparent focus:outline-none"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type a message"
               />
               <button type="submit" className="p-3">
                 <svg width="24" height="24" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,7 +104,6 @@ function App() {
       </div>
     </div>
   )
-
 }
 
 export default App;

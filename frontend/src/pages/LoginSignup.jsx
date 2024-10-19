@@ -29,7 +29,7 @@ const LoginSignup = () => {
                     fill="currentColor"
                   >
                     {" "}
-                    {/*Folled a guide on implementing the icons */}
+                    {/*Followed a guide on implementing the icons */}
                     <path
                       fillRule="evenodd"
                       d="M10 12a5 5 0 100-10 5 5 0 000 10zm-7 6a7 7 0 0114 0H3z"

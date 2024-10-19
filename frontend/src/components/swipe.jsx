@@ -82,7 +82,7 @@ const Images = ({ imgIndex }) => {
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-          animate={{ scale: imgIndex === idx ? 0.95 : 0.85 }}
+          animate={{ scale: imgIndex === idx ? 0.7 : 0.7 }}
           transition={SPRING_OPTIONS}
           className="aspect-video w-screen shrink-0 rounded-xl bg-neutral-800 object-cover"
         />

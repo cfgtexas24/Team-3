@@ -35,11 +35,12 @@ function Mentor() {
     };
   }, []);
 
-  const joinChat = (waitingUserId) => {
+  const joinChat = (data) => {
+    console.log(data)
     // Logic to join the chat with the selected user
-    console.log(`Joining chat with user: ${waitingUserId}`);
-    socket.emit('leave_waiting_list', waitingUserId);
-    navigate("/chat", { state: "mentor" });
+    console.log(`Joining chat with user: ${data.user.id}`);
+    socket.emit('leave_waiting_list', data);
+    navigate("/chat", { state: { type: "mentor", conversationId: data.conversationId } });
   };
 
   return (
@@ -53,12 +54,12 @@ function Mentor() {
       <div className="flex flex-1 overflow-hidden p-4">
         <h2 className="text-xl font-bold mb-4">Waiting Users</h2>
         <ul className="space-y-2">
-          {waitingUsers.map((user) => (
-            <li key={user.id} className="flex items-center justify-between p-2 border-b">
-              <span>User: {user.name}</span>
+          {waitingUsers.map((data) => (
+            <li key={data.user.id} className="flex items-center justify-between p-2 border-b">
+              <span>User: {data.user.name}</span>
               <button 
                 className="bg-blue-500 text-white p-2 rounded" 
-                onClick={() => joinChat(user)}
+                onClick={() => joinChat(data)}
               >
                 Join Chat
               </button>

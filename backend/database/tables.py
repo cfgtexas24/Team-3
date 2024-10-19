@@ -5,16 +5,18 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
+engine = create_engine('DATABASE_URI')
+
 mentor_chat_association = Table(
     'mentor_chat', Base.metadata,
     Column('mentor_id', Integer, ForeignKey('mentors.id'), primary_key=True),
-    Column('chat_id', Integer, ForeignKey('chats.id'), primary_key=True)
+    Column('chat_id', Integer, ForeignKey('chats.chat_id'), primary_key=True)  # Corrected ForeignKey reference
 )
 
 mentee_chat_association = Table(
     'mentee_chat', Base.metadata,
     Column('mentee_id', Integer, ForeignKey('mentees.id'), primary_key=True),
-    Column('chat_id', Integer, ForeignKey('chats.id'), primary_key=True)
+    Column('chat_id', Integer, ForeignKey('chats.chat_id'), primary_key=True)  # Corrected ForeignKey reference
 )
 
 mentor_email_association = Table(
@@ -46,8 +48,7 @@ class Mentor(Base):
     screened = Column(Boolean) 
     
     chats = relationship('Chat', back_populates='mentor_rel') 
-
-
+    emails = relationship('Email', secondary=mentor_email_association)  # Added relationship for emails
 
 class Emergency(Base):
     __tablename__ = 'emergency'
@@ -70,6 +71,7 @@ class Mentee(Base):
     screened = Column(Boolean)
 
     chats = relationship('Chat', back_populates='mentee_rel')  
+
 class Chat(Base):
     __tablename__ = 'chats'
     
@@ -81,14 +83,16 @@ class Chat(Base):
     mentee_rel = relationship('Mentee', back_populates='chats')  
     mentor_rel = relationship('Mentor', back_populates='chats') 
 
-
 class Email(Base):
     __tablename__ = 'emails'
-    emailID = Column(String, primary_key=True)
     
-    user_id = relationship(
-        'Mentor',
-        secondary=mentor_email_association,
-        backpopulates='email'
-    )
+    emailID = Column(String, primary_key=True)
+    admins = relationship('Admin', back_populates='email')
 
+class Notification(Base):
+    __tablename__ = 'notifications'
+    id = Column(Integer, primary_key=True)
+    message = Column(String)
+
+
+Base.metadata.create_all(engine)

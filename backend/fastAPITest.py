@@ -3,7 +3,7 @@ from database import crud
 from database.connections import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
-from database.models import Mentor, Mentee, Chat, Admin
+from database.models import Mentor, Mentee, Chat, Admin, Emergency
 
 app = FastAPI()
 
@@ -62,3 +62,19 @@ async def get_email_by_id(email: str, db: Session = Depends(get_db)):
 @app.post('/email')
 async def create_email(email: str, db: Session = Depends(get_db)):
     return crud.create_email(db=db, email=email)
+
+@app.post('/emergency')
+async def create_emergency(emergency: Emergency, db: Session = Depends(get_db)):
+   return crud.emergency_create(db=db, emergency=emergency)
+
+
+@app.get('/emergency')
+async def get_emergencies(db: Session = Depends(get_db)):
+   return crud.emergency_get_all(db= db)
+
+
+@app.get('/emergency{emergency_id}')
+async def get_emergency_by_id(emergency_id: int, db: Session = Depends(get_db)):
+   return crud.emergency_get_one(db=db, emergency_id=emergency_id)
+
+

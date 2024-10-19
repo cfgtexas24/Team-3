@@ -55,3 +55,28 @@ class Mentee(BaseModel):
 
     class Config:
         orm_mode = True
+
+class Chat(BaseModel):
+   id: int
+   menteeid = int
+   mentorid = int
+   chat_log = str
+  
+   class Config:
+       orm_mode = True
+class Email(BaseModel):
+   emailid = int
+   admins = int
+
+
+   class Config:
+       orm_mode = True
+
+
+class Notification(BaseModel):
+   id = int
+   message = str
+
+
+   class Config:
+       orm_mode = True

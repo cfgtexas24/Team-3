@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FiMenu, FiArrowRight } from "react-icons/fi";
+import stormLogo from '/assets/storm.png'; // Update the path as necessary
+
 //import React from 'react';
 
 const FlipNavWrapper = () => {
@@ -26,11 +28,17 @@ const FlipNav = () => {
   );
 };
 
+/*
 const Logo = () => {
   return (
     <img src="storm.png" alt="Storm Logo" className="w-10 h-10 mr-4" />
   );
-};
+};*/
+const Logo = () => {
+    return (
+      <img src={stormLogo} alt="Storm Logo" className="w-10 h-10 mr-4" />
+    );
+  };
 
 const NavLeft = ({ setIsOpen }) => {
   return (

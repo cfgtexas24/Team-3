@@ -6,8 +6,10 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
+# Declare database engine with Supabase URL, stored in local variable
 engine = create_engine('DATABASE_URI')
 
+# Initializing all relationships in schema
 mentor_chat_association = Table(
     'mentor_chat', Base.metadata,
     Column('mentor_id', Integer, ForeignKey('mentors.id'), primary_key=True),
@@ -26,6 +28,7 @@ mentor_email_association = Table(
     Column('emailID', String, ForeignKey('emails.emailID'), primary_key=True)
 )
 
+# Creating tables for database
 class Admin(Base):
     __tablename__ = 'admins'
     id = Column(Integer, primary_key=True)

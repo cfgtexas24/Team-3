@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import io from 'socket.io-client';
+import io from "socket.io-client";
+import { UserCheck, Clock } from "lucide-react";
 
-const ENDPOINT = 'http://localhost:5000';
+const ENDPOINT = "http://localhost:5000";
 
 function Mentor() {
   const [waitingUsers, setWaitingUsers] = useState([]);
@@ -12,22 +13,22 @@ function Mentor() {
 
   useEffect(() => {
     const socket = io(ENDPOINT, {
-      transports: ['websocket'],
+      transports: ["websocket"],
       cors: {
         origin: "http://localhost:3000",
-        methods: ["GET", "POST"]
-      }
+        methods: ["GET", "POST"],
+      },
     });
 
     setSocket(socket);
 
-    socket.on('connect', () => {
-        console.log('Connected to Socket.IO server');
+    socket.on("connect", () => {
+      console.log("Connected to Socket.IO server");
     });
 
-    socket.on('waiting_users', (users) => {
-      console.log(users)
-        setWaitingUsers(users);
+    socket.on("waiting_users", (users) => {
+      console.log(users);
+      setWaitingUsers(users);
     });
 
     return () => {
@@ -35,37 +36,60 @@ function Mentor() {
     };
   }, []);
 
-  const joinChat = (data) => {
-    console.log(data)
-    // Logic to join the chat with the selected user
-    console.log(`Joining chat with user: ${data.user.id}`);
-    socket.emit('leave_waiting_list', data);
-    navigate("/chat", { state: { type: "mentor", conversationId: data.conversationId } });
+  const joinChat = (waitingUserId) => {
+    console.log(`Joining chat with user: ${waitingUserId}`);
+    socket.emit("leave_waiting_list", waitingUserId);
+    navigate("/chat", { state: "mentor" });
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <header className="bg-gray-800 text-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Mentor Dashboard</h1>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden">
+        <header className="bg-gray-800 text-white p-6">
+          <h1 className="text-3xl font-bold">Mentor Dashboard</h1>
+        </header>
 
-      <div className="flex flex-1 overflow-hidden p-4">
-        <h2 className="text-xl font-bold mb-4">Waiting Users</h2>
-        <ul className="space-y-2">
-          {waitingUsers.map((data) => (
-            <li key={data.user.id} className="flex items-center justify-between p-2 border-b">
-              <span>User: {data.user.name}</span>
-              <button 
-                className="bg-blue-500 text-white p-2 rounded" 
-                onClick={() => joinChat(data)}
+        <div className="p-6">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+            Waiting Users
+          </h2>
+          <div className="space-y-4">
+            {waitingUsers.map((user) => (
+              <div
+                key={user.id}
+                className="bg-gray-50 rounded-lg p-4 flex items-center justify-between shadow-md"
               >
-                Join Chat
-              </button>
-            </li>
-          ))}
-        </ul>
+                <div className="flex items-center space-x-4">
+                  <div className="bg-blue-100 p-2 rounded-full">
+                    <UserCheck className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800">
+                      User: {user.name}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Waiting since: {new Date().toLocaleTimeString()}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+                  onClick={() => joinChat(user)}
+                >
+                  Join Chat
+                </button>
+              </div>
+            ))}
+            {waitingUsers.length === 0 && (
+              <div className="text-center py-10">
+                <Clock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-xl text-gray-600">
+                  No users waiting at the moment
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

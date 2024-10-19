@@ -212,6 +212,32 @@ def get_user_conversations():
         'conversations': conversation_details
     }), 200
 
+
+@app.route('/get_conversation_messages', methods=['POST'])
+def get_conversation_messages():
+    """API route to fetch messages for a given conversation ID."""
+    data = request.get_json()
+    conversation_id = data.get('conversation_id')
+
+    if not conversation_id:
+        return jsonify({'error': 'Conversation ID is required.'}), 400
+
+    # Fetch the conversation
+    conversation = Conversation.query.get(conversation_id)
+    if not conversation:
+        return jsonify({'error': 'Conversation not found.'}), 404
+
+    # The messages are already stored in the conversation model
+    messages = conversation.messages
+
+    # Return the messages
+    return jsonify({
+        'conversation_id': conversation.id,
+        'messages': messages
+    }), 200
+
+
+
 @app.route('/append_message', methods=['POST'])
 def append_message():
     """API route to append a message to a conversation's messages array."""

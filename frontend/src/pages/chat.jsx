@@ -26,6 +26,18 @@ function App() {
   const user = useAppStore(state => state.user);
   const location = useLocation();
 
+  async function getConversationMessages(conversation_id) {
+    const response = await axios.post(`http://localhost:5000/get_conversation_messages`, {
+      conversation_id: conversation_id
+    });
+
+    const newConversationId = response.data.conversation_id;
+    const messages = response.data.messages;
+
+    setConversationId(newConversationId);
+    setMessages(messages);
+  }
+
   useEffect(() => {
     const socket = io(ENDPOINT, {
       transports: ['websocket'],
@@ -175,7 +187,7 @@ function App() {
                   key={index}
                   className="bg-blue-100 p-3 rounded-lg shadow hover:bg-blue-200 transition duration-150"
                 >
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2" onClick={() => getConversationMessages(chat.id)}>
                     <MessageSquare size={20} className="text-blue-500" />
                     <p className="truncate max-w-full">{chat.messages[0]?.text}</p>
                   </div>

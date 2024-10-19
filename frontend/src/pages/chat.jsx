@@ -16,11 +16,7 @@ function App() {
   const [pastConversations, setPastConversations] = useState([]);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State to toggle sidebar visibility
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
-
+  
   console.log(pastConversations)
 
   const user = useAppStore(state => state.user);

@@ -2,93 +2,88 @@ from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.ext.mutable import MutableList
-from sqlalchemy.dialects.postgresql import JSONB  # Import JSONB for PostgreSQL
 import os
 
-# Initialize Flask app
 app = Flask(__name__)
 
-# Allow CORS (Cross-Origin Resource Sharing)
+# CORS and SocketIO setup
 CORS(app, resources={r"/*": {"origins": "*"}})
-
-# Initialize Socket.IO for real-time communication, allowing any origin
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Database Configuration (Ideally, store credentials in environment variables)
+# Database Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
     'DATABASE_URL', 'postgresql://postgres.wvckutfciwyfmdkjjagv:0a3LSKB2A7NaMO9P@aws-0-us-east-1.pooler.supabase.com:6543/postgres')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize the database
 db = SQLAlchemy(app)
 
-# User model representing users in the system
-
+# Models
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    is_mentor = db.Column(db.Boolean, default=False)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(100), unique=True, nullable=False)
+    is_mentor = Column(Boolean, default=False)
+    conversations = Column(MutableList.as_mutable(ARRAY(String)), default=list)
 
-    # Store conversation IDs as an array of strings
-    conversations = db.Column(MutableList.as_mutable(ARRAY(String)), default=list)
-
-    def __repr__(self):
-        return f"User('{self.name}', '{self.email}', Mentor: {self.is_mentor})"
-    
 class Conversation(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    messages = db.Column(MutableList.as_mutable(JSONB), default=list)  # Store messages as an array of JSONB
+    id = Column(Integer, primary_key=True)
+    messages = Column(MutableList.as_mutable(JSONB), default=list)
 
-    def __repr__(self):
-        return f"Conversation(id={self.id}, messages={self.messages})"
+class Mentor(db.Model):
+    id = Column(Integer, primary_key=True)
+    # Add other fields as needed
 
+class Mentee(db.Model):
+    id = Column(Integer, primary_key=True)
+    # Add other fields as needed
 
-# List to store user IDs that are waiting for a chat
-waiting_users = []
+class Chat(db.Model):
+    id = Column(Integer, primary_key=True)
+    # Add other fields as needed
 
+class Admin(db.Model):
+    id = Column(Integer, primary_key=True)
+    # Add other fields as needed
+
+class Emergency(db.Model):
+    id = Column(Integer, primary_key=True)
+    # Add other fields as needed
+
+class Notification(db.Model):
+    id = Column(Integer, primary_key=True)
+    # Add other fields as needed
+
+class Bulletin(db.Model):
+    id = Column(Integer, primary_key=True)
+    # Add other fields as needed
+
+# Routes
 @app.route('/')
 def index():
-    """Serve the index route to indicate the server is running."""
     return "Socket.IO Server Running!"
-
-# API Route to create a new user
-
 
 @app.route('/create_user', methods=['POST'])
 def create_user():
-    """API route to create a new user in the system."""
     data = request.get_json()
-
-    # Validate required fields
     if not data or 'name' not in data or 'email' not in data:
         return jsonify({'error': 'Name and email are required.'}), 400
-
-    # Retrieve the data from the request
+    
     name = data.get('name')
     email = data.get('email')
     role = data.get('role')
+    is_mentor = role == 'Mentor'
 
-    print(role)
-
-    is_mentor = False
-    if (role == 'Mentor'):
-        is_mentor = True
-
-    # Check if the email is already registered
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
         return jsonify({'error': 'Email is already in use.'}), 400
 
-    # Create new user and add to the database
     new_user = User(name=name, email=email, is_mentor=is_mentor)
     db.session.add(new_user)
     db.session.commit()
 
-    # Respond with the new user's information
     return jsonify({
         'id': new_user.id,
         'name': new_user.name,
@@ -98,22 +93,15 @@ def create_user():
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
-    """API route to sign in a user."""
     data = request.get_json()
-
-    # Validate required fields
     if not data or 'email' not in data:
         return jsonify({'error': 'Email is required.'}), 400
 
-    # Retrieve the email from the request
     email = data.get('email')
-
-    # Check if the user exists
     user = User.query.filter_by(email=email).first()
     if not user:
         return jsonify({'error': 'User not found.'}), 404
 
-    # Respond with the user's information (do not return sensitive info like password)
     return jsonify({
         'id': user.id,
         'name': user.name,
@@ -123,58 +111,38 @@ def sign_in():
 
 @app.route('/create_conversation', methods=['POST'])
 def create_conversation():
-    """API route to create a new blank conversation record."""
-
     data = request.get_json()
     user_id = data.get("user_id")
 
-    # Retrieve the user
     user = User.query.filter_by(id=user_id).first()
     if not user:
         return jsonify({'error': 'User not found.'}), 404
 
-    # Create a new blank conversation
     new_conversation = Conversation(messages=[])
-
-    # Add to the database
     db.session.add(new_conversation)
     db.session.commit()
 
-    # Append the new conversation ID to the user's conversations
     user.conversations.append(str(new_conversation.id))
-
-    # Update the user in the database
     db.session.commit()
 
-    # Respond with the new conversation's information
-    return jsonify({
-        'id': new_conversation.id,
-    }), 201
+    return jsonify({'id': new_conversation.id}), 201
 
 @app.route('/append_conversation', methods=['POST'])
 def append_conversation():
-    """API route to append a conversation ID to a user's conversations list."""
     data = request.get_json()
-
-    # Validate required fields
     if not data or 'user_id' not in data or 'conversation_id' not in data:
         return jsonify({'error': 'User ID and conversation ID are required.'}), 400
 
     user_id = data['user_id']
     conversation_id = data['conversation_id']
 
-    # Fetch the user by ID
     user = User.query.filter_by(id=user_id).first()
     if not user:
         return jsonify({'error': 'User not found.'}), 404
 
-    # Append the conversation ID to the user's conversations
     user.conversations.append(str(conversation_id))
-
-    # Commit the changes to the database
     db.session.commit()
 
-    # Respond with the updated user's information
     return jsonify({
         'user_id': user.id,
         'conversations': user.conversations,
@@ -182,111 +150,238 @@ def append_conversation():
 
 @app.route('/get_user_conversations', methods=['POST'])
 def get_user_conversations():
-    """API route to get the full details of all conversations for a user."""
     data = request.get_json()
     user_id = data.get('user_id')
     
     if not user_id:
         return jsonify({'error': 'User ID is required.'}), 400
 
-    # Fetch the user by ID
     user = User.query.get(user_id)
     if not user:
         return jsonify({'error': 'User not found.'}), 404
 
-    # Fetch all conversations for the user
     conversations = Conversation.query.filter(Conversation.id.in_(user.conversations)).all()
 
-    # Prepare the response data
-    conversation_details = []
-    for conversation in conversations:
-        conversation_details.append({
-            'id': conversation.id,
-            'messages': conversation.messages,
-            # Add any other relevant conversation fields here
-        })
+    conversation_details = [
+        {'id': conv.id, 'messages': conv.messages}
+        for conv in conversations
+    ]
 
-    # Return the full conversation details
     return jsonify({
         'user_id': user.id,
         'conversations': conversation_details
     }), 200
 
-
 @app.route('/get_conversation_messages', methods=['POST'])
 def get_conversation_messages():
-    """API route to fetch messages for a given conversation ID."""
     data = request.get_json()
     conversation_id = data.get('conversation_id')
 
     if not conversation_id:
         return jsonify({'error': 'Conversation ID is required.'}), 400
 
-    # Fetch the conversation
     conversation = Conversation.query.get(conversation_id)
     if not conversation:
         return jsonify({'error': 'Conversation not found.'}), 404
 
-    # The messages are already stored in the conversation model
-    messages = conversation.messages
-
-    # Return the messages
     return jsonify({
         'conversation_id': conversation.id,
-        'messages': messages
+        'messages': conversation.messages
     }), 200
-
-
 
 @app.route('/append_message', methods=['POST'])
 def append_message():
-    """API route to append a message to a conversation's messages array."""
     data = request.get_json()
 
-    print(data)
-
-    # Validate required fields
     if not data or 'message' not in data or 'user' not in data or 'conversationId' not in data:
         return jsonify({'error': 'Message, user, and conversationId are required.'}), 400
 
-    # Retrieve data from the request
     message = data['message']
     user = data['user']
     conversation_id = data['conversationId']
 
-    print(conversation_id)
-
-    # Find the conversation by ID
     conversation = Conversation.query.get(conversation_id)
     if not conversation:
         return jsonify({'error': 'Conversation not found.'}), 404
 
-    # Append the new message to the messages list
     new_message = {
         'text': message,
         'user': user,
         'conversationId': conversation_id
     }
 
-    print("Before appending:", conversation.messages)
     conversation.messages.append(new_message)
-    print("After appending:", conversation.messages)
-
-    # Mark the conversation as modified (if necessary)
     db.session.add(conversation)
-
-    # Commit the changes to the database
     db.session.commit()
 
-    # Respond with the updated conversation's information
     return jsonify({
         'id': conversation.id,
         'messages': conversation.messages,
     }), 200
 
+@app.route('/mentors', methods=['POST'])
+def create_mentor():
+    mentor_data = request.get_json()
+    new_mentor = Mentor(**mentor_data)
+    db.session.add(new_mentor)
+    db.session.commit()
+    return jsonify({"id": new_mentor.id}), 201
 
-# Event handler for new socket connection
+@app.route('/mentors', methods=['GET'])
+def get_mentors():
+    mentors = Mentor.query.all()
+    return jsonify([mentor.to_dict() for mentor in mentors])
 
+@app.route('/mentors/<int:mentor_id>', methods=['GET'])
+def get_mentor_by_id(mentor_id):
+    mentor = Mentor.query.get_or_404(mentor_id)
+    return jsonify(mentor.to_dict())
+
+@app.route('/mentees', methods=['POST'])
+def create_mentee():
+    mentee_data = request.get_json()
+    new_mentee = Mentee(**mentee_data)
+    db.session.add(new_mentee)
+    db.session.commit()
+    return jsonify({"id": new_mentee.id}), 201
+
+@app.route('/mentees', methods=['GET'])
+def get_mentees():
+    mentees = Mentee.query.all()
+    return jsonify([mentee.to_dict() for mentee in mentees])
+
+@app.route('/mentees/<int:mentee_id>', methods=['GET'])
+def get_mentee_by_id(mentee_id):
+    mentee = Mentee.query.get_or_404(mentee_id)
+    return jsonify(mentee.to_dict())
+
+@app.route('/admin', methods=['POST'])
+def create_admin():
+    admin_data = request.get_json()
+    new_admin = Admin(**admin_data)
+    db.session.add(new_admin)
+    db.session.commit()
+    return jsonify({"id": new_admin.id}), 201
+
+@app.route('/admin', methods=['GET'])
+def get_admins():
+    admins = Admin.query.all()
+    return jsonify([admin.to_dict() for admin in admins])
+
+@app.route('/admin/<int:admin_id>', methods=['GET'])
+def get_admin_by_id(admin_id):
+    admin = Admin.query.get_or_404(admin_id)
+    return jsonify(admin.to_dict())
+
+@app.route('/chat', methods=['GET'])
+def get_chats():
+    chats = Chat.query.all()
+    return jsonify([chat.to_dict() for chat in chats])
+
+@app.route('/chat/<int:chat_id>', methods=['GET'])
+def get_chat_by_id(chat_id):
+    chat = Chat.query.get_or_404(chat_id)
+    return jsonify(chat.to_dict())
+
+@app.route('/email', methods=['GET'])
+def get_email():
+    email = request.args.get('email')
+    user = User.query.filter_by(email=email).first()
+    return jsonify(user.to_dict() if user else {"error": "Email not found"})
+
+@app.route('/email/<string:email>', methods=['GET'])
+def get_email_by_id(email):
+    user = User.query.filter_by(email=email).first_or_404()
+    return jsonify(user.to_dict())
+
+@app.route('/email', methods=['POST'])
+def create_email():
+    email_data = request.get_json()
+    new_user = User(email=email_data['email'])
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"id": new_user.id}), 201
+
+@app.route('/emergency', methods=['POST'])
+def create_emergency():
+    emergency_data = request.get_json()
+    new_emergency = Emergency(**emergency_data)
+    db.session.add(new_emergency)
+    db.session.commit()
+    return jsonify({"id": new_emergency.id}), 201
+
+@app.route('/emergency', methods=['GET'])
+def get_emergencies():
+    emergencies = Emergency.query.all()
+    return jsonify([emergency.to_dict() for emergency in emergencies])
+
+@app.route('/emergency/<int:emergency_id>', methods=['GET'])
+def get_emergency_by_id(emergency_id):
+    emergency = Emergency.query.get_or_404(emergency_id)
+    return jsonify(emergency.to_dict())
+
+@app.route('/chat', methods=['POST'])
+def create_chat():
+    chat_data = request.get_json()
+    new_chat = Chat(**chat_data)
+    db.session.add(new_chat)
+    db.session.commit()
+    return jsonify({"id": new_chat.id}), 201
+
+@app.route('/notifications', methods=['POST'])
+def create_notification():
+    notification_data = request.get_json()
+    new_notification = Notification(**notification_data)
+    db.session.add(new_notification)
+    db.session.commit()
+    return jsonify({"id": new_notification.id}), 201
+
+@app.route('/notifications', methods=['GET'])
+def get_notifications():
+    notifications = Notification.query.all()
+    return jsonify([notification.to_dict() for notification in notifications])
+
+@app.route('/notifications/<int:notification_id>', methods=['GET'])
+def get_notification_by_id(notification_id):
+    notification = Notification.query.get_or_404(notification_id)
+    return jsonify(notification.to_dict())
+
+@app.route('/mentors/byusername/<string:username>', methods=['GET'])
+def get_mentors_by_username(username):
+    mentor = Mentor.query.filter_by(username=username).first_or_404()
+    return jsonify(mentor.to_dict())
+
+@app.route('/mentees/byusername/<string:username>', methods=['GET'])
+def get_mentees_by_username(username):
+    mentee = Mentee.query.filter_by(username=username).first_or_404()
+    return jsonify(mentee.to_dict())
+
+@app.route('/admins/byusername/<string:username>', methods=['GET'])
+def get_admins_by_username(username):
+    admin = Admin.query.filter_by(username=username).first_or_404()
+    return jsonify(admin.to_dict())
+
+@app.route('/bulletin', methods=['GET'])
+def get_bulletin():
+    bulletins = Bulletin.query.all()
+    return jsonify([bulletin.to_dict() for bulletin in bulletins])
+
+@app.route('/bulletin', methods=['POST'])
+def create_bulletin():
+    bulletin_data = request.get_json()
+    new_bulletin = Bulletin(**bulletin_data)
+    db.session.add(new_bulletin)
+    db.session.commit()
+    return jsonify({"id": new_bulletin.id}), 201
+
+@app.route('/bulletin/<int:bulletin_id>', methods=['DELETE'])
+def delete_bulletin(bulletin_id):
+    bulletin = Bulletin.query.get_or_404(bulletin_id)
+    db.session.delete(bulletin)
+    db.session.commit()
+    return '', 204
+
+waiting_users = []
 
 @socketio.on('connect')
 def handle_connect():

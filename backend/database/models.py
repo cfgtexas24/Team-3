@@ -87,7 +87,6 @@ class Bulletin(BaseModel):
    id: int
    message: str
    img_src: str
-   title: str
    link: str
 
    class Config:

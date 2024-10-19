@@ -100,6 +100,5 @@ class Bulletin(Base):
     message = Column(String)
     img_src = Column(String)
     link = Column(String)
-    title = Column(String)
 
 Base.metadata.create_all(engine)

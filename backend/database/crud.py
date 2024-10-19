@@ -229,8 +229,8 @@ def notification_delete(db: Session, notification_id: int):
 
 
 # CRUD operations for bulletin table creating a bulletin
-def bulletin_create(db: Session, bulletin: tables.bulletin):
-    db_bulletin = tables.bulletin(bulletin_id=bulletin.bulletin_id, message=bulletin.message, img_src=bulletin.img_src, link=bulletin.link, title=bulletin.title)
+def bulletin_create(db: Session, bulletin: tables.Bulletin):
+    db_bulletin = tables.Bulletin(bulletin_id=bulletin.bulletin_id, message=bulletin.message, img_src=bulletin.img_src, link=bulletin.link)
     db.add(db_bulletin)
     db.commit()
     db.refresh(db_bulletin)
@@ -238,22 +238,22 @@ def bulletin_create(db: Session, bulletin: tables.bulletin):
 
 # CRUD operations for bulletin table getting all bulletins
 def bulletin_get_all(db: Session):
-    return db.query(tables.bulletin).all()
+    return db.query(tables.Bulletin).all()
 
 # CRUD operations for bulletin table getting one bulletin
 def bulletin_get_one(db: Session, bulletin_id: int):
-    return db.query(tables.bulletin).filter(tables.bulletin.bulletin_id == bulletin_id).one()
+    return db.query(tables.Bulletin).filter(tables.Bulletin.bulletin_id == bulletin_id).one()
 
 # CRUD operations for bulletin table updating a bulletin
-def bulletin_update(db: Session, bulletin_id: int, bulletin: tables.bulletin):
-    update_query = {tables.bulletin.bulletin_id: bulletin.bulletin_id, tables.bulletin.message: bulletin.message, tables.bulletin.img_src: bulletin.img_src, tables.bulletin.link: bulletin.link, tables.bulletin.title: bulletin.title}
-    db.query(tables.bulletin).filter(tables.bulletin.bulletin_id == bulletin.bulletin_id).update(update_query)
+def bulletin_update(db: Session, bulletin_id: int, bulletin: tables.Bulletin):
+    update_query = {tables.Bulletin.bulletin_id: bulletin.bulletin_id, tables.Bulletin.message: bulletin.message, tables.Bulletin.img_src: bulletin.img_src, tables.Bulletin.link: bulletin.link}
+    db.query(tables.Bulletin).filter(tables.Bulletin.bulletin_id == bulletin.bulletin_id).update(update_query)
     db.commit()
-    return db.query(tables.bulletin).filter(tables.bulletin.bulletin_id == bulletin.bulletin_id).one()
+    return db.query(tables.Bulletin).filter(tables.Bulletin.bulletin_id == bulletin.bulletin_id).one()
 
 # CRUD operations for bulletin table deleting a bulletin
 def bulletin_delete(db: Session, bulletin_id: int):
-    bulletin = db.query(tables.bulletin).filter(tables.bulletin.bulletin_id == bulletin_id).first()
+    bulletin = db.query(tables.Bulletin).filter(tables.Bulletin.bulletin_id == bulletin_id).first()
     if not bulletin:
         return None
     db.delete(bulletin)

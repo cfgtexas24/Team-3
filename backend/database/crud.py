@@ -83,3 +83,67 @@ def chat_delete(db: Session, chat_id: int):
     db.delete(chat)
     db.commit()
     return chat
+
+def emergency_create(db: Session, emergency: tables.Emergency):
+    db_emergency = tables.Emergency(name=emergency.name, caller_phone_num=emergency.caller_phone_num, staff_phone_num=emergency.staff_phone_num, message=emergency.message)
+    db.add(db_emergency)
+    db.commit()
+    db.refresh(db_emergency)
+    return emergency
+
+
+def emergency_get_all(db: Session):
+    return db.query(tables.Emergency).all()
+
+
+def emergency_get_one(db: Session, emergency_id: int):
+    return db.query(tables.Emergency).filter(tables.Emergency.id == emergency_id).one()
+
+
+def emergency_update(db: Session, emergency_id: int, emergency: tables.Emergency):
+    update_query = {tables.Emergency.name: emergency.name, tables.Emergency.caller_phone_num: emergency.caller_phone_num, tables.Emergency.staff_phone_num: emergency.staff_phone_num, tables.Emergency.message: emergency.message}
+    db.query(tables.Emergency).filter(tables.Emergency.id == emergency.id).update(update_query)
+    db.commit()
+    return db.query(tables.Emergency).filter(tables.Emergency.id == emergency.id).one()
+
+
+def emergency_delete(db: Session, emergency_id: int):
+    emergency = db.query(tables.Emergency).filter(tables.Emergency.id == emergency_id).first()
+    if not emergency:
+        return None
+    db.delete(emergency)
+    db.commit()
+    return emergency
+
+
+def mentee_create(db: Session, mentee: tables.Mentee):
+    db_mentee = tables.Mentee(name=mentee.name, mentored=mentee.mentored, sheltered=mentee.sheltered, email=mentee.email, age=mentee.age, username=mentee.username, password=mentee.password, screened=mentee.screened)
+    db.add(db_mentee)
+    db.commit()
+    db.refresh(db_mentee)
+    return mentee
+
+
+def mentee_get_all(db: Session):
+    return db.query(tables.Mentee).all()
+
+
+def mentee_get_one(db: Session, mentee_id: int):
+    return db.query(tables.Mentee).filter(tables.Mentee.id == mentee_id).one()
+
+
+def mentee_update(db: Session, mentee_id: int, mentee: tables.Mentee):
+    update_query = {tables.Mentee.name: mentee.name, tables.Mentee.mentored: mentee.mentored, tables.Mentee.sheltered: mentee.sheltered, tables.Mentee.email: mentee.email, tables.Mentee.age:
+                    mentee.age, tables.Mentee.username: mentee.username, tables.Mentee.password: mentee.password, tables.Mentee.screened: mentee.screened}
+    db.query(tables.Mentee).filter(tables.Mentee.id == mentee.id).update(update_query)
+    db.commit()
+    return db.query(tables.Mentee).filter(tables.Mentee.id == mentee.id).one()
+
+
+def mentee_delete(db: Session, mentee_id: int):
+    mentee = db.query(tables.Mentee).filter(tables.Mentee.id == mentee_id).first()
+    if not mentee:
+        return None
+    db.delete(mentee)
+    db.commit()
+    return mentee

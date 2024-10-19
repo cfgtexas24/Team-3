@@ -1,7 +1,9 @@
 import { create } from 'zustand'
 const useAppStore = create((set) => ({
-    userType: null,
-    setUserType: () => set((userType) => ({ userType: userType }))
+    user: null,
+    setUser: (user) => set(() => {
+        return ({ user: user })
+    })
 }))
 
 export default useAppStore;

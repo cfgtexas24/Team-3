@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import io from 'socket.io-client';
 import { MessageSquare, Send } from 'lucide-react';
+import useAppStore from "../useAppStore";
 
 const ENDPOINT = 'http://localhost:5000';
 
@@ -10,10 +10,8 @@ function App() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [socket, setSocket] = useState();
-  const [user, setUser] = useState(uuid());
 
-  const location = useLocation();
-  const userType = location.state;
+  const user = useAppStore(state => state.user);
 
   useEffect(() => {
     const socket = io(ENDPOINT, {
@@ -25,19 +23,20 @@ function App() {
     });
 
     setSocket(socket);
-    setUser(uuid());
 
     socket.on('connect', () => {
       console.log('Connected to Socket.IO server');
     });
 
-    if(userType === "mentee") {
-      socket.emit('join_waiting_list', uuid());
+    console.log(user);
+
+    if(user.isMentor == false) {
+      socket.emit('join_waiting_list', user);
     }
 
     socket.on('message', (msg) => {
-      const { text, userId } = msg;
-      setMessages((prevMessages) => [...prevMessages, { text, userId: userId }]);
+      const { text, user } = msg;
+      setMessages((prevMessages) => [...prevMessages, { text, user: user }]);
     });
 
     return () => {
@@ -48,7 +47,7 @@ function App() {
   const sendMessage = (e) => {
     e.preventDefault();
     if (message) {
-      socket.emit("message", { text: message, userId: user });
+      socket.emit("message", { text: message, user: user });
       setMessage('');
     }
   }
@@ -71,14 +70,14 @@ function App() {
       <div className="flex-1 overflow-hidden flex flex-col">
         <main className="flex-1 overflow-y-auto p-6">
           <div className="max-w-3xl mx-auto space-y-4">
-            <div className="flex items-start space-x-2 mb-4">
+            { user.isMentor == false && (<div className="flex items-start space-x-2 mb-4">
               <div className="bg-blue-500 rounded-full p-2">
                 <MessageSquare size={24} className="text-white" />
               </div>
               <div className="bg-white rounded-lg p-3 shadow-md max-w-xs lg:max-w-md">
                 <p>Howdy! The STORM Center of Hope and Services supports individuals and families through counseling, education, and community services. How can we help you!</p>
               </div>
-            </div>
+            </div>) }
 
             {messages.map((msg, index) => (
               <div key={index} className={`flex items-start space-x-2 ${msg.userId === user ? "flex-row-reverse space-x-reverse" : ""}`}>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { v4 as uuid } from "uuid";
 import io from 'socket.io-client';
 
 const ENDPOINT = 'http://localhost:5000';
@@ -8,7 +7,6 @@ const ENDPOINT = 'http://localhost:5000';
 function Mentor() {
   const [waitingUsers, setWaitingUsers] = useState([]);
   const [socket, setSocket] = useState();
-  const userId = uuid(); // Unique ID for the mentor
 
   const navigate = useNavigate();
 
@@ -56,8 +54,8 @@ function Mentor() {
         <h2 className="text-xl font-bold mb-4">Waiting Users</h2>
         <ul className="space-y-2">
           {waitingUsers.map((user) => (
-            <li key={user} className="flex items-center justify-between p-2 border-b">
-              <span>User ID: {user}</span>
+            <li key={user.id} className="flex items-center justify-between p-2 border-b">
+              <span>User: {user.name}</span>
               <button 
                 className="bg-blue-500 text-white p-2 rounded" 
                 onClick={() => joinChat(user)}

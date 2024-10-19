@@ -1,4 +1,17 @@
+import useAppStore from "../useAppStore";
+import { v4 as uuid } from 'uuid';
+import { useNavigate } from "react-router-dom";
+
 function App() {
+  const navigate = useNavigate();
+
+  const setUser = useAppStore(state => state.setUser);
+  
+  const signin = () => {
+    setUser(uuid());
+    navigate("/chat");  
+  }
+  
   return (
     <div className="text-gray-900">
       {/* Header */}
@@ -17,17 +30,7 @@ function App() {
 
       {/* Hero Section */}
       <section id="home" className="h-screen bg-gray-100 flex flex-col justify-center items-center text-center">
-       
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="bg-gray-200 py-20">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-8">Features</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            
-          </div>
-        </div>
+        <button onClick={() => signin()} >sign in</button>
       </section>
 
       {/* Footer */}

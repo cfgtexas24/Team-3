@@ -12,8 +12,7 @@ def index():
 
 @socketio.on('message')
 def handle_message(msg):
-    print('Message received: ' + msg)
-    socketio.send(msg)  # Echo the message back to the client
+    socketio.send(msg)  # Send the message with sender information back to all clients
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

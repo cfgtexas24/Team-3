@@ -30,7 +30,6 @@ const FMentor = () => {
             <div key={chat.id} className="mb-2 p-4 border border-gray-300 rounded-lg"> {/* Darker outline for existing chats */}
               <div className="flex items-center">
                 <h3 className="text-lg font-semibold">{chat.name}</h3>
-                <FiAlertCircle className="ml-2 text-red-500" /> {/* Add the alert icon next to the name */}
               </div>
               <p>{chat.lastMessage}</p>
             </div>

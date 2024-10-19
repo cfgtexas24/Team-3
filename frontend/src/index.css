@@ -1,30 +1,31 @@
-/* index.css */
-
-/* General body styles */
 body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
     margin: 0;
-    padding: 20px;
+    font-family: 'Arial', sans-serif; 
+    background-color: #fdfa46; 
+    color: #333; 
+    text-align: center; 
 }
 
-/* Heading styles */
 h1 {
-    font-size: 2.5em; /* Large heading */
-    color: #0f151c;   /* Dark color */
+    font-size: 2.1em; 
+    color: #151414;; 
+    font-weight: bold; 
+}
+
+h2 {
+    font-size: 1.5em;
+    color: #151414;; 
+    margin-top: 20px; 
+    font-weight: bold; 
 }
 
 p {
-    font-size: 1.2em; /* Slightly larger text */
-    color: #211b1b;      /* Grey color */
+    font-size: 1.2em; 
+    line-height: 1.6; 
+    margin: 10px 0; 
 }
 
-.landing-page {
-    display: flex;                   /* Enable flexbox */
-    flex-direction: column;          /* Stack items vertically */
-    justify-content: flex-start;     /* Align items at the top */
-    align-items: center;             /* Center horizontally */
-    height: 100vh;                   /* Full viewport height */
-    text-align: center;              /* Center text inside the container */
-    padding-top: 20px;               /* Add some padding from the top */
+/* Strong Text */
+strong {
+    color: #141415; 
 }

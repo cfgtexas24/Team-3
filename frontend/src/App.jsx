@@ -1,16 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import "./index.css"; // Your global styles
+// src/App.jsx
+import React from 'react';
+import LandingPage from './pages/Landingpage'; // Ensure this path is correct
 
-import LandingPage from './pages/Landingpage';
+import "./index.css";
 
 const App = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-      </Routes>
-    </Router>
-  );
+    return (
+        <div>
+            <LandingPage /> {/* Use the NotesBox component */}
+        </div>
+    );
 };
 
 export default App;

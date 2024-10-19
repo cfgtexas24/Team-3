@@ -36,10 +36,12 @@ function Mentor() {
     };
   }, []);
 
-  const joinChat = (waitingUserId) => {
-    console.log(`Joining chat with user: ${waitingUserId}`);
-    socket.emit("leave_waiting_list", waitingUserId);
-    navigate("/chat", { state: "mentor" });
+  const joinChat = (data) => {
+    console.log(data);
+
+    console.log(`Joining chat with user: ${data.user.id}`);
+    socket.emit("leave_waiting_list", data.user.id);
+    navigate("/chat", { state: { type: "mentor", conversationId: data.conversationId } });
   };
 
   return (

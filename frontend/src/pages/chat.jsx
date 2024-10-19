@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import io from 'socket.io-client';
 import { MessageSquare, Send } from 'lucide-react';
 import useAppStore from "../useAppStore";
@@ -123,9 +123,7 @@ function App() {
           <h1 className="text-3xl font-bold">STORM</h1>
           <nav>
             <ul className="flex space-x-6">
-              <li><a href="#rag" className="hover:text-gray-300">RAG Page</a></li>
-              <li><a href="#p2p" className="hover:text-gray-300">P2P Page</a></li>
-              <li><a href="#board" className="hover:text-gray-300">Message Board</a></li>
+              { user.isMentor && (<Link to="/mentor">Waiting Room</Link>) }
             </ul>
           </nav>
         </div>

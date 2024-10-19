@@ -130,6 +130,7 @@ def create_conversation():
 @app.route('/append_conversation', methods=['POST'])
 def append_conversation():
     data = request.get_json()
+
     if not data or 'user_id' not in data or 'conversation_id' not in data:
         return jsonify({'error': 'User ID and conversation ID are required.'}), 400
 
@@ -141,6 +142,9 @@ def append_conversation():
         return jsonify({'error': 'User not found.'}), 404
 
     user.conversations.append(str(conversation_id))
+
+    print(user.conversations)
+    
     db.session.commit()
 
     return jsonify({

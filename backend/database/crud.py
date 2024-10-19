@@ -97,6 +97,7 @@ def chat_delete(db: Session, chat_id: int):
     db.commit()
     return chat
 
+# Create new emergency instance with input attributes
 def emergency_create(db: Session, emergency: tables.Emergency):
     db_emergency = tables.Emergency(name=emergency.name, caller_phone_num=emergency.caller_phone_num, staff_phone_num=emergency.staff_phone_num, message=emergency.message)
     db.add(db_emergency)
@@ -104,22 +105,22 @@ def emergency_create(db: Session, emergency: tables.Emergency):
     db.refresh(db_emergency)
     return emergency
 
-
+# Return all emergencies from table 
 def emergency_get_all(db: Session):
     return db.query(tables.Emergency).all()
 
-
+# Return specific emergency from searched ID
 def emergency_get_one(db: Session, emergency_id: int):
     return db.query(tables.Emergency).filter(tables.Emergency.id == emergency_id).one()
 
-
+# Return updated emergency, searched by emergency ID
 def emergency_update(db: Session, emergency_id: int, emergency: tables.Emergency):
     update_query = {tables.Emergency.name: emergency.name, tables.Emergency.caller_phone_num: emergency.caller_phone_num, tables.Emergency.staff_phone_num: emergency.staff_phone_num, tables.Emergency.message: emergency.message}
     db.query(tables.Emergency).filter(tables.Emergency.id == emergency.id).update(update_query)
     db.commit()
     return db.query(tables.Emergency).filter(tables.Emergency.id == emergency.id).one()
 
-
+# Deletes emergency searched by emergency ID
 def emergency_delete(db: Session, emergency_id: int):
     emergency = db.query(tables.Emergency).filter(tables.Emergency.id == emergency_id).first()
     if not emergency:
@@ -128,7 +129,7 @@ def emergency_delete(db: Session, emergency_id: int):
     db.commit()
     return emergency
 
-
+# Create mentee with inputed attributes
 def mentee_create(db: Session, mentee: tables.Mentee):
     db_mentee = tables.Mentee(name=mentee.name, mentored=mentee.mentored, sheltered=mentee.sheltered, email=mentee.email, age=mentee.age, username=mentee.username, password=mentee.password, screened=mentee.screened)
     db.add(db_mentee)
@@ -136,15 +137,15 @@ def mentee_create(db: Session, mentee: tables.Mentee):
     db.refresh(db_mentee)
     return mentee
 
-
+# Return all mentees
 def mentee_get_all(db: Session):
     return db.query(tables.Mentee).all()
 
-
+# Return mentee searched by specific ID
 def mentee_get_one(db: Session, mentee_id: int):
     return db.query(tables.Mentee).filter(tables.Mentee.id == mentee_id).one()
 
-
+# Update mentee by input attributes
 def mentee_update(db: Session, mentee_id: int, mentee: tables.Mentee):
     update_query = {tables.Mentee.name: mentee.name, tables.Mentee.mentored: mentee.mentored, tables.Mentee.sheltered: mentee.sheltered, tables.Mentee.email: mentee.email, tables.Mentee.age:
                     mentee.age, tables.Mentee.username: mentee.username, tables.Mentee.password: mentee.password, tables.Mentee.screened: mentee.screened}
@@ -152,7 +153,7 @@ def mentee_update(db: Session, mentee_id: int, mentee: tables.Mentee):
     db.commit()
     return db.query(tables.Mentee).filter(tables.Mentee.id == mentee.id).one()
 
-
+# Delete mentee searched by mentee ID
 def mentee_delete(db: Session, mentee_id: int):
     mentee = db.query(tables.Mentee).filter(tables.Mentee.id == mentee_id).first()
     if not mentee:

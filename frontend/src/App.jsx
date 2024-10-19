@@ -150,11 +150,12 @@ export default App;*/
 // App.jsx
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import React from 'react';
+//import React from 'react';
 import "./index.css";
 
 import LandingPage from './pages/LandingPage'; // Adjust the path if necessary
 import FMentor from './pages/fMentor'; // Import the updated component
+import BurgerGame from './pages/game';
 
 const App = () => {
   return (
@@ -163,6 +164,7 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/fMentor" element={<FMentor />} /> {/* Route to FMentor *}
         {/* Add other routes here if needed */}
+        <Route path="/game"element = {<BurgerGame/>}/>
       </Routes>
     </Router>
   );

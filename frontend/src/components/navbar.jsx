@@ -75,6 +75,13 @@ const NavRight = () => {
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        className="px-4 py-2 bg-red-600 text-white font-medium rounded-md whitespace-nowrap"
+      >
+        Emergency
+      </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md whitespace-nowrap"
       >
         Sign in
@@ -82,7 +89,7 @@ const NavRight = () => {
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md whitespace-nowrap" // Changed to dark blue
+        className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md whitespace-nowrap"
       >
         Sign up
       </motion.button>

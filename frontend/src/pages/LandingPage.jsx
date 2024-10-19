@@ -1,4 +1,3 @@
-
 // src/pages/LandingPage.jsx
 
 import React from 'react';
@@ -69,11 +68,28 @@ const LandingPage = () => {
 
             {/* Contact Section */}
             <footer className="contact text-center mx-auto">
-                <h2>Contact Us</h2>
+                <h2><strong>Contact Us</strong></h2>
                 <p>
                     For more information, visit our website or reach out to us directly. Together, we can build a stronger, more compassionate community.
                 </p>
             </footer>
+
+            {/* Frequently Asked Questions Section */}
+            <section className="faq-section text-center mx-auto">
+                <h2><strong>Frequently Asked Questions</strong></h2>
+                <div className="faq-box">
+                    <h3>Q: What services do you offer for homeless individuals?</h3>
+                    <p>A: We provide emergency shelter, food assistance, counseling, and job training to support individuals in need.</p>
+                </div>
+                <div className="faq-box">
+                    <h3>Q: How can I volunteer at the shelter?</h3>
+                    <p>A: You can volunteer by contacting our volunteer coordinator or signing up through our website. We appreciate any time you can dedicate to helping our community.</p>
+                </div>
+                <div className="faq-box">
+                    <h3>Q: Do you accept donations?</h3>
+                    <p>A: Yes, we accept donations of food, clothing, toiletries, and financial contributions. Your generosity helps us continue to provide essential services.</p>
+                </div>
+            </section>
         </div>
     );
 };

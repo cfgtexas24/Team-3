@@ -94,4 +94,12 @@ class Notification(Base):
     message = Column(String)
 
 
+class Bulletin(Base):
+    __tablename__ = 'Bulletin'
+    id = Column(Integer, primary_key=True)
+    message = Column(String)
+    img_src = Column(String)
+    link = Column(String)
+    title = Column(String)
+
 Base.metadata.create_all(engine)

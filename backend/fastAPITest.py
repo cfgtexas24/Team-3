@@ -3,7 +3,7 @@ from database import crud
 from database.connections import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
-from database.models import Mentor, Mentee, Chat, Admin, Emergency, Notification
+from database.models import Mentor, Mentee, Chat, Admin, Emergency, Notification, Bulletin
 
 app = FastAPI()
 
@@ -104,3 +104,15 @@ async def get_mentees_by_username(username: str, db: Session = Depends(get_db)):
 @app.get('/admins/byusername/{username}')
 async def get_admins_by_username(username: str, db: Session = Depends(get_db)):
     return crud.admin_get_by_username(db=db, username=username)
+
+@app.get('/bulletin')
+async def get_bulletin(db: Session = Depends(get_db)):
+    return crud.get_bulletin(db=db)
+
+@app.post('/bulletin')
+async def create_bulletin(bulletin: Bulletin, db: Session = Depends(get_db)):
+    return crud.create_bulletin(db=db, bulletin=bulletin)
+
+@app.delete('/bulletin/{bulletin_id}')
+async def delete_bulletin(bulletin_id: int, db: Session = Depends(get_db)):
+    return crud.delete_bulletin(db=db, bulletin_id=bulletin_id)

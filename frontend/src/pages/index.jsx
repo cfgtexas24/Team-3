@@ -17,7 +17,6 @@ function App() {
 
       {/* Hero Section */}
       <section id="home" className="h-screen bg-gray-100 flex flex-col justify-center items-center text-center">
-       
       </section>
 
       {/* Features Section */}

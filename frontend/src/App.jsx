@@ -1,8 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import "./index.css"; // Your global styles
 
-import "./index.css";
-
-import LandingPage from './pages/index';
+import LandingPage from './pages/Landingpage';
 
 const App = () => {
   return (

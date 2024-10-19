@@ -201,26 +201,11 @@ function App() {
 
             {/* Chat messages */}
             {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex items-start space-x-2 ${
-                  msg.userId === user
-                    ? "flex-row-reverse space-x-reverse"
-                    : ""
-                }`}
-              >
-                <div
-                  className={`rounded-full p-2 ${
-                    msg.userId === user ? "bg-green-500" : "bg-blue-500"
-                  }`}
-                >
+              <div key={index} className={`flex items-start space-x-2 ${msg.user.id === user.id ? "flex-row-reverse space-x-reverse" : ""}`}>
+                <div className={`rounded-full p-2 ${msg.user.id === user.id ? "bg-green-500" : "bg-blue-500"}`}>
                   <MessageSquare size={24} className="text-white" />
                 </div>
-                <div
-                  className={`rounded-lg p-3 shadow-md max-w-xs lg:max-w-md ${
-                    msg.userId === user ? "bg-green-100" : "bg-white"
-                  }`}
-                >
+                <div className={`rounded-lg p-3 shadow-md max-w-xs lg:max-w-md ${msg.user.id === user.id ? "bg-green-100" : "bg-white"}`}>
                   <p>{msg.text}</p>
                 </div>
               </div>

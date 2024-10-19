@@ -193,3 +193,37 @@ def email_delete(db: Session, email_id: int):
     db.delete(email)
     db.commit()
     return email
+
+
+# CRUD operations for notification table creating a notification
+def notification_create(db: Session, notification: tables.Notification):
+    db_notification = tables.Notification(notification_id=notification.notification_id, message=notification.message)
+    db.add(db_notification)
+    db.commit()
+    db.refresh(db_notification)
+    return notification
+
+# CRUD operations for notification table getting all notifications
+def notification_get_all(db: Session):
+    return db.query(tables.Notification).all()
+
+# CRUD operations for notification table getting one notification
+def notification_get_one(db: Session, notification_id: int):
+    return db.query(tables.Notification).filter(tables.Notification.notification_id == notification_id).one()
+
+# CRUD operations for notification table updating a notification
+def notification_update(db: Session, notification_id: int, notification: tables.Notification):
+    update_query = {tables.Notification.notification_id: notification.notification_id, tables.Notification.message: notification.message}
+    db.query(tables.Notification).filter(tables.Notification.notification_id == notification.notification_id).update(update_query)
+    db.commit()
+    return db.query(tables.Notification).filter(tables.Notification.notification_id == notification.notification_id).one()
+
+# CRUD operations for notification table deleting a notification
+def notification_delete(db: Session, notification_id: int):
+    notification = db.query(tables.Notification).filter(tables.Notification.notification_id == notification_id).first()
+    if not notification:
+        return None
+    db.delete(notification)
+    db.commit()
+    return notification
+

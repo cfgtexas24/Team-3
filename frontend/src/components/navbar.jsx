@@ -27,25 +27,8 @@ const FlipNav = () => {
 };
 
 const Logo = () => {
-  // Temp logo from https://logoipsum.com/
   return (
-    <svg
-      width="50"
-      height="39"
-      viewBox="0 0 50 39"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="fill-gray-800"
-    >
-      <path
-        d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z"
-        stopColor="#000000"
-      ></path>
-      <path
-        d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z"
-        stopColor="#000000"
-      ></path>
-    </svg>
+    <img src="storm.png" alt="Storm Logo" className="w-10 h-10 mr-4" />
   );
 };
 
@@ -92,14 +75,14 @@ const NavRight = () => {
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent font-medium rounded-md whitespace-nowrap"
+        className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md whitespace-nowrap"
       >
         Sign in
       </motion.button>
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium rounded-md whitespace-nowrap"
+        className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md whitespace-nowrap" // Changed to dark blue
       >
         Sign up
       </motion.button>

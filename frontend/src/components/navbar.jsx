@@ -47,9 +47,9 @@ const NavLeft = ({ setIsOpen }) => {
       </motion.button>
       <Logo />
       <NavLink text="RAG Page" />
-      <NavLink text="P2P Page" />
       <NavLink text="Message Board" />
       <NavLink text="Resources" />
+      <NavLink text="Games" />
     </div>
   );
 };

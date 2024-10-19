@@ -42,7 +42,7 @@ const LandingPage = () => {
 
             {/* Community Impact Section */}
             <section className="impact text-center mx-auto">
-                <h2>Community Impact</h2>
+                <h2>Community Impact:</h2>
                 <p>
                     By addressing immediate needs and fostering long-term solutions, we enhance the well-being of our community through collaboration and support.
                 </p>
@@ -50,18 +50,20 @@ const LandingPage = () => {
 
             {/* Get Involved Section */}
             <section className="get-involved text-center mx-auto">
-                <h2>Get Involved</h2>
+                <h2>Get Involved:</h2>
                 <p>
                     Join us in our mission! You can make a meaningful difference through volunteering, donations, or participation in our programs.
                 </p>
-                <button className="cta-button">Donate Now</button>
-                <button className="cta-button">Volunteer</button>
-                <button className="cta-button">Learn More</button>
+                <div className="flex flex-wrap justify-center gap-4">
+                    <button className="cta-button outline outline-blue-500 bg-blue-500 text-white text-xs">Donate Now</button>
+                    <button className="cta-button outline outline-blue-500 bg-blue-500 text-white text-xs">Volunteer</button>
+                    <button className="cta-button outline outline-blue-500 bg-blue-500 text-white text-xs">Learn More</button>
+                </div>
             </section>
 
             {/* Scrolling Testimonials Section */}
             <section className="testimonials-section text-center mx-auto">
-                <h2>Testimonials</h2>
+                <h2></h2>
                 <ScrollingTestimonials />
             </section>
 
@@ -77,3 +79,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+// src/pages/LandingPage.jsx

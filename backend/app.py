@@ -1,3 +1,7 @@
+import smtplib
+import ssl
+from email.message import EmailMessage
+from email.message import EmailMessage
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
@@ -31,34 +35,6 @@ class User(db.Model):
 class Conversation(db.Model):
     id = Column(Integer, primary_key=True)
     messages = Column(MutableList.as_mutable(JSONB), default=list)
-
-class Mentor(db.Model):
-    id = Column(Integer, primary_key=True)
-    # Add other fields as needed
-
-class Mentee(db.Model):
-    id = Column(Integer, primary_key=True)
-    # Add other fields as needed
-
-class Chat(db.Model):
-    id = Column(Integer, primary_key=True)
-    # Add other fields as needed
-
-class Admin(db.Model):
-    id = Column(Integer, primary_key=True)
-    # Add other fields as needed
-
-class Emergency(db.Model):
-    id = Column(Integer, primary_key=True)
-    # Add other fields as needed
-
-class Notification(db.Model):
-    id = Column(Integer, primary_key=True)
-    # Add other fields as needed
-
-class Bulletin(db.Model):
-    id = Column(Integer, primary_key=True)
-    # Add other fields as needed
 
 # Routes
 @app.route('/')
@@ -223,168 +199,6 @@ def append_message():
         'messages': conversation.messages,
     }), 200
 
-@app.route('/mentors', methods=['POST'])
-def create_mentor():
-    mentor_data = request.get_json()
-    new_mentor = Mentor(**mentor_data)
-    db.session.add(new_mentor)
-    db.session.commit()
-    return jsonify({"id": new_mentor.id}), 201
-
-@app.route('/mentors', methods=['GET'])
-def get_mentors():
-    mentors = Mentor.query.all()
-    return jsonify([mentor.to_dict() for mentor in mentors])
-
-@app.route('/mentors/<int:mentor_id>', methods=['GET'])
-def get_mentor_by_id(mentor_id):
-    mentor = Mentor.query.get_or_404(mentor_id)
-    return jsonify(mentor.to_dict())
-
-@app.route('/mentees', methods=['POST'])
-def create_mentee():
-    mentee_data = request.get_json()
-    new_mentee = Mentee(**mentee_data)
-    db.session.add(new_mentee)
-    db.session.commit()
-    return jsonify({"id": new_mentee.id}), 201
-
-@app.route('/mentees', methods=['GET'])
-def get_mentees():
-    mentees = Mentee.query.all()
-    return jsonify([mentee.to_dict() for mentee in mentees])
-
-@app.route('/mentees/<int:mentee_id>', methods=['GET'])
-def get_mentee_by_id(mentee_id):
-    mentee = Mentee.query.get_or_404(mentee_id)
-    return jsonify(mentee.to_dict())
-
-@app.route('/admin', methods=['POST'])
-def create_admin():
-    admin_data = request.get_json()
-    new_admin = Admin(**admin_data)
-    db.session.add(new_admin)
-    db.session.commit()
-    return jsonify({"id": new_admin.id}), 201
-
-@app.route('/admin', methods=['GET'])
-def get_admins():
-    admins = Admin.query.all()
-    return jsonify([admin.to_dict() for admin in admins])
-
-@app.route('/admin/<int:admin_id>', methods=['GET'])
-def get_admin_by_id(admin_id):
-    admin = Admin.query.get_or_404(admin_id)
-    return jsonify(admin.to_dict())
-
-@app.route('/chat', methods=['GET'])
-def get_chats():
-    chats = Chat.query.all()
-    return jsonify([chat.to_dict() for chat in chats])
-
-@app.route('/chat/<int:chat_id>', methods=['GET'])
-def get_chat_by_id(chat_id):
-    chat = Chat.query.get_or_404(chat_id)
-    return jsonify(chat.to_dict())
-
-@app.route('/email', methods=['GET'])
-def get_email():
-    email = request.args.get('email')
-    user = User.query.filter_by(email=email).first()
-    return jsonify(user.to_dict() if user else {"error": "Email not found"})
-
-@app.route('/email/<string:email>', methods=['GET'])
-def get_email_by_id(email):
-    user = User.query.filter_by(email=email).first_or_404()
-    return jsonify(user.to_dict())
-
-@app.route('/email', methods=['POST'])
-def create_email():
-    email_data = request.get_json()
-    new_user = User(email=email_data['email'])
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify({"id": new_user.id}), 201
-
-@app.route('/emergency', methods=['POST'])
-def create_emergency():
-    emergency_data = request.get_json()
-    new_emergency = Emergency(**emergency_data)
-    db.session.add(new_emergency)
-    db.session.commit()
-    return jsonify({"id": new_emergency.id}), 201
-
-@app.route('/emergency', methods=['GET'])
-def get_emergencies():
-    emergencies = Emergency.query.all()
-    return jsonify([emergency.to_dict() for emergency in emergencies])
-
-@app.route('/emergency/<int:emergency_id>', methods=['GET'])
-def get_emergency_by_id(emergency_id):
-    emergency = Emergency.query.get_or_404(emergency_id)
-    return jsonify(emergency.to_dict())
-
-@app.route('/chat', methods=['POST'])
-def create_chat():
-    chat_data = request.get_json()
-    new_chat = Chat(**chat_data)
-    db.session.add(new_chat)
-    db.session.commit()
-    return jsonify({"id": new_chat.id}), 201
-
-@app.route('/notifications', methods=['POST'])
-def create_notification():
-    notification_data = request.get_json()
-    new_notification = Notification(**notification_data)
-    db.session.add(new_notification)
-    db.session.commit()
-    return jsonify({"id": new_notification.id}), 201
-
-@app.route('/notifications', methods=['GET'])
-def get_notifications():
-    notifications = Notification.query.all()
-    return jsonify([notification.to_dict() for notification in notifications])
-
-@app.route('/notifications/<int:notification_id>', methods=['GET'])
-def get_notification_by_id(notification_id):
-    notification = Notification.query.get_or_404(notification_id)
-    return jsonify(notification.to_dict())
-
-@app.route('/mentors/byusername/<string:username>', methods=['GET'])
-def get_mentors_by_username(username):
-    mentor = Mentor.query.filter_by(username=username).first_or_404()
-    return jsonify(mentor.to_dict())
-
-@app.route('/mentees/byusername/<string:username>', methods=['GET'])
-def get_mentees_by_username(username):
-    mentee = Mentee.query.filter_by(username=username).first_or_404()
-    return jsonify(mentee.to_dict())
-
-@app.route('/admins/byusername/<string:username>', methods=['GET'])
-def get_admins_by_username(username):
-    admin = Admin.query.filter_by(username=username).first_or_404()
-    return jsonify(admin.to_dict())
-
-@app.route('/bulletin', methods=['GET'])
-def get_bulletin():
-    bulletins = Bulletin.query.all()
-    return jsonify([bulletin.to_dict() for bulletin in bulletins])
-
-@app.route('/bulletin', methods=['POST'])
-def create_bulletin():
-    bulletin_data = request.get_json()
-    new_bulletin = Bulletin(**bulletin_data)
-    db.session.add(new_bulletin)
-    db.session.commit()
-    return jsonify({"id": new_bulletin.id}), 201
-
-@app.route('/bulletin/<int:bulletin_id>', methods=['DELETE'])
-def delete_bulletin(bulletin_id):
-    bulletin = Bulletin.query.get_or_404(bulletin_id)
-    db.session.delete(bulletin)
-    db.session.commit()
-    return '', 204
-
 waiting_users = []
 
 @socketio.on('connect')
@@ -453,6 +267,35 @@ def get_user(user_id):
         'email': user.email,
         'isMentor': user.is_mentor
     })
+
+@app.route("/send-notification", methods=['POST'])
+def send_email():
+    # Define email sender and receiver
+    email_sender = 'vs.nalavade2003@gmail.com'
+    email_password = 'tdyo zukz ybfa pfse'
+    email_receiver = 'sumit.nalavade@tamu.edu'
+
+    # Set the subject and body of the email
+    subject = 'New Mentee'
+    body = """
+    A mentee is waiting for you!
+    """
+
+    em = EmailMessage()
+    em['From'] = email_sender
+    em['To'] = email_receiver
+    em['Subject'] = subject
+    em.set_content(body)
+
+    # Add SSL (layer of security)
+    context = ssl.create_default_context()
+
+    # Log in and send the email
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+        smtp.login(email_sender, email_password)
+        smtp.sendmail(email_sender, email_receiver, em.as_string())
+
+    return "success"
 
 
 def setup_database(app):

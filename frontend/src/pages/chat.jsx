@@ -59,6 +59,14 @@ function App() {
         setConversationId(conversationId)
 
         socket.emit('join_waiting_list', { user, conversationId: conversationId });
+
+        await fetch('http://localhost:5000/send-notification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
       } else {
         const { conversationId } = location.state
         setConversationId(conversationId);

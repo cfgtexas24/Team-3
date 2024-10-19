@@ -3,7 +3,7 @@ from database import crud
 from database.connections import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
-from database.models import Mentor, Mentee, Chat, Admin, Emergency
+from database.models import Mentor, Mentee, Chat, Admin, Emergency, Notification
 
 app = FastAPI()
 
@@ -77,4 +77,30 @@ async def get_emergencies(db: Session = Depends(get_db)):
 async def get_emergency_by_id(emergency_id: int, db: Session = Depends(get_db)):
    return crud.emergency_get_one(db=db, emergency_id=emergency_id)
 
+@app.post('/chat')
+async def create_chat(chat: Chat, db: Session = Depends(get_db)):
+    return crud.chat_create(db=db, chat=chat)
 
+@app.post('/notifications')
+async def create_notification(notification: Notification, db: Session = Depends(get_db)):
+    return crud.notification_create(db=db, notification=notification)
+
+@app.get('/notifications')
+async def get_notifications(db: Session = Depends(get_db)):
+    return crud.notification_get_all(db=db)
+
+@app.get('/notifications/{notification_id}')
+async def get_notification_by_id(notification_id: int, db: Session = Depends(get_db)):
+    return crud.notification_get_one(db=db, notification_id=notification_id)
+
+@app.get('/mentors/byusername/{username}')
+async def get_mentors_by_username(username: str, db: Session = Depends(get_db)):
+    return crud.mentor_get_by_username(db=db, username=username)
+
+@app.get('/mentees/byusername/{username}')
+async def get_mentees_by_username(username: str, db: Session = Depends(get_db)):
+    return crud.mentee_get_by_username(db=db, username=username)
+
+@app.get('/admins/byusername/{username}')
+async def get_admins_by_username(username: str, db: Session = Depends(get_db)):
+    return crud.admin_get_by_username(db=db, username=username)

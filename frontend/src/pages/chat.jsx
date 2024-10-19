@@ -13,6 +13,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [socket, setSocket] = useState();
   const [conversationId, setConversationId] = useState();
+  const [pastConversations, setPastConversations] = useState([]);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State to toggle sidebar visibility
 
@@ -20,13 +21,7 @@ function App() {
     setIsSidebarOpen((prev) => !prev);
   };
 
-  const recentChats = [
-    { text: "Hello! How can we assist you today?" },
-    { text: "I have an issue with my account." },
-    { text: "Sure! I'll help you with that." },
-    { text: "Thank you for reaching out." },
-    { text: "Is there anything else I can assist you with?" },
-  ];
+  console.log(pastConversations)
 
   const user = useAppStore(state => state.user);
   const location = useLocation();
@@ -66,7 +61,15 @@ function App() {
         });
       }
 
-      console.log(conversationId)
+      const prevConversationsResponse = await axios.post(`http://localhost:5000/get_user_conversations`, {
+        user_id: user.id
+      });
+
+      const prevConversations = prevConversationsResponse.data.conversations
+
+      setPastConversations(prevConversations);
+
+      console.log(prevConversations);
     });
 
 
@@ -165,17 +168,23 @@ function App() {
           <div className="p-6">
             <h2 className="text-lg font-bold mb-4">Recent Chats</h2>
             <ul className="space-y-4">
-              {recentChats.map((chat, index) => (
-                <li
+              {pastConversations.map((chat, index) => {
+                if(chat.id !== conversationId) {
+                  return (
+                    <li
                   key={index}
                   className="bg-blue-100 p-3 rounded-lg shadow hover:bg-blue-200 transition duration-150"
                 >
                   <div className="flex items-center space-x-2">
                     <MessageSquare size={20} className="text-blue-500" />
-                    <p className="truncate max-w-full">{chat.text}</p>
+                    <p className="truncate max-w-full">{chat.messages[0]?.text}</p>
                   </div>
                 </li>
-              ))}
+                  )
+                } else {
+                  <></>
+                }
+              })}
             </ul>
           </div>
         )}

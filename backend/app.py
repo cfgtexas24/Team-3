@@ -180,24 +180,37 @@ def append_conversation():
         'conversations': user.conversations,
     }), 200
 
-@app.route('/get_user_conversations', methods=['GET'])
-def get_user_conversations(user_id):
-    """API route to get the entire conversations array for a user."""
-    # Fetch the user by ID
+@app.route('/get_user_conversations', methods=['POST'])
+def get_user_conversations():
+    """API route to get the full details of all conversations for a user."""
     data = request.get_json()
-    user_id = data['user_id']
+    user_id = data.get('user_id')
+    
+    if not user_id:
+        return jsonify({'error': 'User ID is required.'}), 400
 
+    # Fetch the user by ID
     user = User.query.get(user_id)
-
     if not user:
         return jsonify({'error': 'User not found.'}), 404
 
-    # Return the conversations array
+    # Fetch all conversations for the user
+    conversations = Conversation.query.filter(Conversation.id.in_(user.conversations)).all()
+
+    # Prepare the response data
+    conversation_details = []
+    for conversation in conversations:
+        conversation_details.append({
+            'id': conversation.id,
+            'messages': conversation.messages,
+            # Add any other relevant conversation fields here
+        })
+
+    # Return the full conversation details
     return jsonify({
         'user_id': user.id,
-        'conversations': user.conversations
+        'conversations': conversation_details
     }), 200
-
 
 @app.route('/append_message', methods=['POST'])
 def append_message():

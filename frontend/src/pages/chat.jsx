@@ -1,7 +1,36 @@
+import { useEffect } from "react";
+import io from 'socket.io-client';
+
 import OllieAvatar from "../components/OllieAvatar";
 import ChatBubble from "../components/ChatBubble";
 
-function ChatPage() {
+const ENDPOINT = 'http://localhost:5000';
+
+function App() {
+  useEffect(() => {
+    const socket = io(ENDPOINT, {
+      transports: ['websocket'],
+      cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"]
+      }
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to Socket.IO server');
+    });
+
+    socket.on('message', (msg) => {
+      console.log('Message from server:', msg);
+    });
+
+    socket.emit("message", "hello");
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <header className="bg-gray-800 text-white p-4">
@@ -16,8 +45,8 @@ function ChatPage() {
           </nav>
         </div>
       </header>
-      
-      <div className="flex flex-1 overflow-hidden">        
+
+      <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 flex flex-col">
           <div className="flex-1 overflow-y-auto p-4">
             <div className="flex items-center space-x-2 mb-4">
@@ -27,10 +56,10 @@ function ChatPage() {
               </ChatBubble>
             </div>
           </div>
-          
+
           <form className="p-4 border-t">
             <div className="flex items-center bg-white rounded-lg border">
-              <input 
+              <input
                 type="text"
                 className="flex-1 p-3 bg-transparent focus:outline-none"
               />
@@ -44,7 +73,8 @@ function ChatPage() {
         </main>
       </div>
     </div>
-  );
+  )
+
 }
 
-export default ChatPage;
+export default App;

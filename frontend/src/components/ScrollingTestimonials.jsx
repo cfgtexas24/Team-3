@@ -8,7 +8,7 @@ const ScrollingTestimonials = () => {
           Testimonials
         </h3>
         <p className="text-center text-slate-300 text-sm mt-2 max-w-lg mx-auto">
-          Hear from those who have benefited from our services. Their stories are a testament to the impact we can have.
+          Hear from those who have benefitted from our services. Their stories are a testament to the impact we can have.
         </p>
       </div>
       <div className="p-4 overflow-x-hidden relative">

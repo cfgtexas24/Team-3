@@ -5,7 +5,17 @@ from sqlalchemy.orm import Session
 from fastapi import Depends
 from database.models import Mentor, Mentee, Chat, Admin, Emergency, Notification, Bulletin
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", 'http://localhost:5000'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post('/mentors')
 async def create_mentor(mentor: Mentor, db: Session = Depends(get_db)):
@@ -115,4 +125,4 @@ async def create_bulletin(bulletin: Bulletin, db: Session = Depends(get_db)):
 
 @app.delete('/bulletin/{bulletin_id}')
 async def delete_bulletin(bulletin_id: int, db: Session = Depends(get_db)):
-    return crud.bulletin_delete(db=db, bulletin_id=bulletin_id)
+    return crud.bulletin_delete(db=db, id=bulletin_id)

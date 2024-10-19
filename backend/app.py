@@ -84,6 +84,32 @@ def create_user():
         'isMentor': new_user.is_mentor
     }), 201
 
+@app.route('/sign_in', methods=['POST'])
+def sign_in():
+    """API route to sign in a user."""
+    data = request.get_json()
+
+    # Validate required fields
+    if not data or 'email' not in data:
+        return jsonify({'error': 'Email is required.'}), 400
+
+    # Retrieve the email from the request
+    email = data.get('email')
+
+    # Check if the user exists
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found.'}), 404
+
+    # Respond with the user's information (do not return sensitive info like password)
+    return jsonify({
+        'id': user.id,
+        'name': user.name,
+        'email': user.email,
+        'isMentor': user.is_mentor
+    }), 200
+
+
 # Event handler for new socket connection
 
 

@@ -20,7 +20,7 @@ const LoginSignup = () => {
   };
 
   const submit = async () => {
-    const endpoint = isLogin ? "/api/login" : "http://localhost:5000/create_user"; // Choose login or signup route
+    const endpoint = isLogin ? "http://localhost:5000/sign_in" : "http://localhost:5000/create_user"; // Choose login or signup route
     const payload = isLogin
       ? { email }
       : { email, name, role: userRole };
@@ -35,10 +35,10 @@ const LoginSignup = () => {
       setUser(userData);
 
       // Check role and navigate accordingly
-      if (userRole === "Mentee") {
+      if (userData.isMentor === false) {
         navigate("/mentee");
         navigate("/chat", { state: "Mentee" });
-      } else if (userRole === "Mentor") {
+      } else if (userData.isMentor === true) {
         navigate("/mentor");
       }
     } catch (error) {

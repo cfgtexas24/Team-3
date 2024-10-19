@@ -5,6 +5,9 @@ const imgs = [
   "../assets/image1.png",
   "../assets/image2.png",
   "../assets/image3.png",
+  "../assets/image4.png",
+  "../assets/image5.png",
+  "../assets/image6.png",
 ];
 
 const ONE_SECOND = 1000;
@@ -52,7 +55,7 @@ export const SwipeCarousel = () => {
   };
 
   return (
-    <div className="relative overflow-hidden bg-neutral-950 py-8">
+    <div className="relative overflow-hidden bg-white py-8"> {/* Changed background color to white */}
       <motion.div
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}

@@ -1,8 +1,8 @@
-
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FiMenu, FiArrowRight } from "react-icons/fi";
-import stormLogo from '/assets/storm.png'; // Update the path as necessary
+import circle from '/assets/circle.png'; // Updated the path to circle.png
+import storm2 from '/assets/storm2.png'; // Added the new storm2.png image
 
 const FlipNavWrapper = () => {
   return (
@@ -20,7 +20,7 @@ const FlipNav = () => {
     <nav className="bg-white p-4 border-b-[1px] border-gray-200 flex items-center justify-between relative">
       <NavLeft setIsOpen={setIsOpen} />
       <div className="flex-grow">
-        <h1 className="text-2xl font-bold text-center">STORM</h1>
+        <img src={storm2} alt="Storm Logo" className="w-40 h-16 mx-auto" /> {/* Made the middle logo a little wider */}
       </div>
       <NavRight />
       <NavMenu isOpen={isOpen} />
@@ -30,7 +30,7 @@ const FlipNav = () => {
 
 const Logo = () => {
   return (
-    <img src={stormLogo} alt="Storm Logo" className="w-10 h-10 mr-4" />
+    <img src={circle} alt="Circle Logo" className="w-10 h-10 mr-4" />
   );
 };
 

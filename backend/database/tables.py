@@ -43,7 +43,7 @@ class Mentor(Base):
     phone_num = Column(Integer)
     ssn = Column(Integer)
     username = Column(String, unique=True)
-    password = Column(String, unique=True)
+    password = Column(String)
     screened = Column(Boolean) 
     
     chats = relationship('Chat', back_populates='mentor_rel') 
@@ -66,7 +66,7 @@ class Mentee(Base):
     email = Column(String)
     age = Column(Integer)
     username = Column(String, unique=True)
-    password = Column(String, unique=True)
+    password = Column(String)
     screened = Column(Boolean)
 
     chats = relationship('Chat', back_populates='mentee_rel')  

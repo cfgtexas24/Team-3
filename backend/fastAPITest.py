@@ -3,7 +3,7 @@ from database import crud
 from database.connections import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
-from database.models import Mentor
+from database.models import Mentor, Mentee, Chat, Admin
 
 app = FastAPI()
 
@@ -19,6 +19,10 @@ async def get_mentor(db: Session = Depends(get_db)):
 async def get_monter_by_id(mentor_id: int, db: Session = Depends(get_db)):
     return crud.mentor_get_one(db=db, mentor_id=mentor_id)
 
+@app.post('/mentees')
+async def create_mentee(mentee: Mentee, db: Session = Depends(get_db)):
+    return crud.mentee_create(db=db, mentee=mentee)
+
 @app.get('/mentees')
 async def get_mentees(db: Session = Depends(get_db)):
     return crud.mentee_get_all(db=db)
@@ -26,6 +30,10 @@ async def get_mentees(db: Session = Depends(get_db)):
 @app.get('/mentees/{mentee_id}')
 async def get_mentee_by_id(mentee_id: int, db: Session = Depends(get_db)):
     return crud.mentee_get_one(db=db, mentee_id=mentee_id)
+
+@app.post('/admin')
+async def create_admin(admin: Admin, db: Session = Depends(get_db)):
+    return crud.admin_create(db=db, admin=admin)
 
 @app.get('/admin')
 async def get_admins(db: Session = Depends(get_db)):

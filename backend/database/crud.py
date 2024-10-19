@@ -249,3 +249,14 @@ def mentors_by_menteee(db: Session, mentee_id: int):
         mentors.append(db.query(tables.Mentor).filter(tables.Mentor.id == mentorID).first())
     return mentors
         
+# CRUD operations for mentor table getting a mentor by username
+def mentor_get_by_username(db: Session, username: str):
+    return db.query(tables.Mentor).filter(tables.Mentor.username == username).first()
+
+# CRUD operations for mentee table getting a mentee by username
+def mentee_get_by_username(db: Session, username: str):
+    return db.query(tables.Mentee).filter(tables.Mentee.username == username).first()
+
+# CRUD operations for admin table getting an admin by username
+def admin_get_by_username(db: Session, username: str):
+    return db.query(tables.Admin).filter(tables.Admin.username == username).first()

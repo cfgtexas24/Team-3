@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table, Boolean
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -22,25 +23,30 @@ mentor_email_association = Table(
     Column('emailID', String, ForeignKey('emails.emailID'), primary_key=True)
 )
 
+class Admin(Base):
+    __tablename__ = 'admins'
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    phone_num = Column(Integer)
+    email_id = Column(String, ForeignKey('emails.emailID'))
+    username = Column(String, unique=True, nullable=False)
+    password = Column(String, nullable=False)
+    
+    email = relationship('Email', back_populates='admins')
+    notifications_id = Column(Integer, ForeignKey('notifications.id'))
+
 class Mentor(Base):
     __tablename__ = 'mentors'
     id = Column(Integer, primary_key=True)
     name = Column(String)
     phone_num = Column(Integer)
     ssn = Column(Integer)
-    username = Column(String, unique = True)
-    password = Column(String, unique = True)
+    username = Column(String, unique=True)
+    password = Column(String, unique=True)
     screened = Column(Boolean) 
-    email = relationship(
-        'Email',
-        secondary = mentor_email_association,
-        back_populates='mentors'
-    )
-    chats = relationship(
-        'Chat',
-        secondary=mentor_chat_association,
-        back_populates='mentors'
-    )
+    
+    chats = relationship('Chat', back_populates='mentor_rel') 
+
 
 
 class Emergency(Base):
@@ -63,28 +69,18 @@ class Mentee(Base):
     password = Column(String, unique=True)
     screened = Column(Boolean)
 
-    chats = relationship(
-        'Chat',
-        secondary=mentee_chat_association,
-        back_populates='mentees'
-    )
-
+    chats = relationship('Chat', back_populates='mentee_rel')  
 class Chat(Base):
     __tablename__ = 'chats'
-    id = Column(Integer, primary_key=True)
-    topic = Column(String)
+    
+    chat_id = Column(Integer, primary_key=True)  
+    menteeID = Column(Integer, ForeignKey('mentees.id'), nullable=False) 
+    mentorID = Column(Integer, ForeignKey('mentors.id'), nullable=False) 
+    chat_log = Column(JSONB, nullable=False)  
 
-    mentors = relationship(
-        'Mentor',
-        secondary=mentor_chat_association,
-        back_populates='chats'
-    )
+    mentee_rel = relationship('Mentee', back_populates='chats')  
+    mentor_rel = relationship('Mentor', back_populates='chats') 
 
-    mentees = relationship(
-        'Mentee',
-        secondary=mentee_chat_association,
-        back_populates='chats'
-    )
 
 class Email(Base):
     __tablename__ = 'emails'

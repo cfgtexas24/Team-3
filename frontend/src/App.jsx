@@ -5,7 +5,6 @@ import "./index.css";
 import LandingPage from './pages/index';
 import ChatPage from "./pages/chat";
 import AuthPage from "./pages/auth";
-import MenteePage from "./pages/mentee";
 import MentorPage from "./pages/mentor";
 
 const App = () => {
@@ -15,7 +14,6 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/mentee" element={<MenteePage />} />
         <Route path="/mentor" element={<MentorPage />} />
       </Routes>
     </Router>

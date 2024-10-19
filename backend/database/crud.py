@@ -227,3 +227,25 @@ def notification_delete(db: Session, notification_id: int):
     db.commit()
     return notification
 
+# CRUD operations to get mentees by mentor
+def mentees_by_mentor(db: Session, mentor_id: int):
+    chats = db.query(tables.Chat).filter(tables.Chat.mentorID == mentor_id).all()
+    if not chats:
+        return []
+    menteeIDs = [chat.menteeID for chat in chats]
+    mentees = []
+    for menteeID in menteeIDs:
+        mentees.append(db.query(tables.Mentee).filter(tables.Menteee.id == menteeID).first())
+    return mentees
+
+# CRUD operations to get mentors by mentee
+def mentors_by_menteee(db: Session, mentee_id: int):
+    chats = db.query(tables.Chat).filter(tables.Chat.menteeID == mentee_id).all()
+    if not chats:
+        return []
+    mentorIDs = [chat.mentorID for chat in chats]
+    mentors = []
+    for mentorID in mentorIDs:
+        mentors.append(db.query(tables.Mentor).filter(tables.Mentor.id == mentorID).first())
+    return mentors
+        

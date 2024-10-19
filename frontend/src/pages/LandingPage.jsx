@@ -76,7 +76,7 @@ const LandingPage = () => {
 
             {/* Frequently Asked Questions Section */}
             <section className="faq-section text-center mx-auto">
-                <h2><strong>Frequently Asked Questions</strong></h2>
+                <h2><strong>Frequently Asked Questions:</strong></h2>
                 <div className="faq-box">
                     <h3>Q: What services do you offer for homeless individuals?</h3>
                     <p>A: We provide emergency shelter, food assistance, counseling, and job training to support individuals in need.</p>

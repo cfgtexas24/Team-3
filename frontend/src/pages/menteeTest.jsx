@@ -20,22 +20,23 @@ const MenteePage = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-            <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">Mentee Page</h1>
 
-            {/* Blog Post Section */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-semibold">Post a Blog</h2>
+        <div className="min-h-screen bg-gray-100 p-6">
+            <h1>Mentee Page </h1>
+            {/* Blog Post Input Area with Increased Width */}
+            <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+
+                <h2 className="text-2xl font-semibold mb-4">Post a Blog</h2>
                 <textarea
                     value={blogPost}
                     onChange={(e) => setBlogPost(e.target.value)}
                     placeholder="Write your blog post here..."
                     className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows="4"
+                    rows="6"
                 />
 
                 {/* File Selection Button */}
-                <div>
+                <div className="mt-4">
                     <input
                         type="file"
                         onChange={handleFileChange}
@@ -50,31 +51,31 @@ const MenteePage = () => {
 
                 <button
                     onClick={handlePostBlog}
-                    className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
+                    className="w-full bg-blue-500 text-white py-2 mt-4 rounded-md hover:bg-blue-600 transition duration-300"
                 >
                     Post Blog
                 </button>
+            </div>
 
-                {/* Existing Blog Posts */}
-                <div className="mt-8">
-                    <h3 className="text-lg font-semibold mb-4">Previous Blog Posts</h3>
-                    {blogPosts.length === 0 && (
-                        <p className="text-gray-500">No blog posts yet.</p>
-                    )}
-                    {blogPosts.map((entry, index) => (
-                        <div
-                            key={index}
-                            className="p-4 mb-4 border border-gray-300 rounded-md shadow-sm"
-                        >
-                            <p className="text-gray-700">{entry.post}</p>
-                            {entry.file && (
-                                <p className="mt-2 text-sm text-gray-500">
-                                    Attached File: <span className="font-semibold">{entry.file.name}</span>
-                                </p>
-                            )}
-                        </div>
-                    ))}
-                </div>
+            {/* Previous Blog Posts Underneath the Input */}
+            <div className="max-w-4xl mx-auto mt-8">
+                <h3 className="text-lg font-semibold mb-4">Previous Blog Posts</h3>
+                {blogPosts.length === 0 && (
+                    <p className="text-gray-500">No blog posts yet.</p>
+                )}
+                {blogPosts.map((entry, index) => (
+                    <div
+                        key={index}
+                        className="p-4 mb-4 bg-white border border-gray-300 rounded-md shadow-sm"
+                    >
+                        <p className="text-gray-700">{entry.post}</p>
+                        {entry.file && (
+                            <p className="mt-2 text-sm text-gray-500">
+                                Attached File: <span className="font-semibold">{entry.file.name}</span>
+                            </p>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     );

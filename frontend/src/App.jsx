@@ -106,7 +106,9 @@ const App = () => {
 };
 
 export default App;*/
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+//THIS WORKS
+/*import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import "./index.css";
 
 import LandingPage from './pages/LandingPage'; // Adjust the path if necessary
@@ -116,6 +118,49 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        {/* Add other routes here if needed *}
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
+/**/
+// App.jsx
+/*THIS ONE WORKS
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import "./index.css";
+
+import LandingPage from './pages/LandingPage'; // Adjust the path if necessary
+import FMentor from './pages/fMentor'; // Import the new component
+
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/fMentor" element={<FMentor />} /> {/* New route *}
+        {/* Add other routes here if needed }
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;*/
+// App.jsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import "./index.css";
+
+import LandingPage from './pages/LandingPage'; // Adjust the path if necessary
+import FMentor from './pages/FMentor'; // Import the updated component
+
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/fMentor" element={<FMentor />} /> {/* Route to FMentor */}
         {/* Add other routes here if needed */}
       </Routes>
     </Router>
@@ -123,5 +168,7 @@ const App = () => {
 };
 
 export default App;
+
+
 
 

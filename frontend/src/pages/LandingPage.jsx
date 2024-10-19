@@ -1,20 +1,4 @@
-/*import React from 'react';
-import FlipNavWrapper from '../components/navbar'; // Adjust the path if necessary
-import { SwipeCarousel } from '../components/swipe'; // Adjust the path if necessary
-import ScrollingTestimonials from '../components/ScrollingTestimonials'; // Adjust the path if necessary
 
-const LandingPage = () => {
-  return (
-    <div>
-      <FlipNavWrapper />
-      <SwipeCarousel />
-      <ScrollingTestimonials />
-      {/* Add any other components or content here }
-    </div>
-  );
-};
-
-export default LandingPage;*/
 
 import React from 'react';
 import FlipNavWrapper from '../components/navbar'; // Adjust the path if necessary

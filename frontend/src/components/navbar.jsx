@@ -101,6 +101,14 @@ const NavRight = () => {
       >
         Sign up
       </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="px-4 py-2 bg-green-600 text-white font-medium rounded-md whitespace-nowrap"
+        onClick={() => window.location.href = '/fMentor'}
+      >
+        Mentor
+      </motion.button>
     </div>
   );
 };

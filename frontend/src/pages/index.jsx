@@ -5,7 +5,7 @@ function App() {
       <header className="bg-blue-800 text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <img src="storm.png" alt="Storm Logo" className="w-10 h-10 mr-4" />
-          <h1 className="text-2xl font-bold">My Landing Page</h1>
+          <h1 className="text-2xl font-bold">STORM</h1>
           <nav>
             <ul className="flex space-x-4">
               <li><a href="#home" className="hover:text-gray-300 hover:scale-110 transition-transform duration-300">RAG Page</a></li>

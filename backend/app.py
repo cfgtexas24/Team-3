@@ -266,11 +266,11 @@ def handle_join_waiting_list(data):
 
 
 @socketio.on('leave_waiting_list')
-def handle_leave_waiting_list(user_id):
+def handle_leave_waiting_list(data):
     """Handle a user leaving the waiting list."""
-    if user_id in waiting_users:
-        waiting_users.remove(user_id)
-        print(f"User {user_id} left the waiting list.")
+    if data in waiting_users:
+        waiting_users.remove(data)
+        print(f"User {data} left the waiting list.")
         # Notify all clients of the updated waiting list
         socketio.emit('waiting_users', waiting_users)
 

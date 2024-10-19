@@ -157,19 +157,6 @@ function App() {
     </header>
 
     <div className="flex flex-1">
-      {/* Toggle Button */}
-      <div
-        className={`flex items-center justify-center w-10 bg-gray-300 cursor-pointer transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? "rounded-l-md" : "rounded-md"
-        }`}
-        onClick={toggleSidebar}
-        style={{
-          backgroundColor: isSidebarOpen ? "#d1d5db" : "#e5e7eb", // Darker when open
-        }}
-      >
-        {isSidebarOpen ? "❌" : "☰"} {/* Icons to indicate open/close */}
-      </div>
-
       {/* Left Sidebar for Recent Chats */}
       <aside
         className={`bg-white shadow-md border-r border-gray-200 transition-all duration-300 ease-in-out ${

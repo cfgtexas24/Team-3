@@ -51,7 +51,7 @@ function App() {
         <div className="flex justify-center gap-4 mb-12">
           <ActionButton to="/auth" className="bg-blue-500 hover:bg-blue-600">Mentee</ActionButton>
           <ActionButton to="/auth" className="bg-green-500 hover:bg-green-600">Mentor</ActionButton>
-          <ActionButton to="/auth" className="bg-red-500 hover:bg-red-600">Emergency</ActionButton>
+          <ActionButton to="/emergency" className="bg-red-500 hover:bg-red-600">Emergency</ActionButton>
         </div>
 
         <section className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">

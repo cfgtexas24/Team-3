@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
+import { useLocation } from 'react-router-dom';
 import io from 'socket.io-client';
 import { MessageSquare, Send } from 'lucide-react';
 import useAppStore from "../useAppStore";
+import axios from "axios";
 
 const ENDPOINT = 'http://localhost:5000';
 
@@ -10,8 +12,10 @@ function App() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [socket, setSocket] = useState();
+  const [conversationId, setConversationId] = useState();
 
   const user = useAppStore(state => state.user);
+  const location = useLocation();
 
   useEffect(() => {
     const socket = io(ENDPOINT, {
@@ -24,35 +28,68 @@ function App() {
 
     setSocket(socket);
 
-    socket.on('connect', () => {
+    socket.on('connect', async () => {
       console.log('Connected to Socket.IO server');
+
+
+      if (user.isMentor === false) {
+        const res = await axios.post('http://localhost:5000/create_conversation', {
+          user_id: user.id
+        });
+
+        const conversationId = res.data.id
+
+        setConversationId(conversationId)
+
+        socket.emit('join_waiting_list', { user, conversationId: conversationId });
+      } else {
+        const { conversationId } = location.state
+        setConversationId(conversationId);
+
+        await axios.post('http://localhost:5000/append_conversation', {
+          user_id: user.id,
+          conversation_id: conversationId,
+        });
+      }
+
+      console.log(conversationId)
     });
 
-    console.log(user);
-
-    if(user.isMentor == false) {
-      socket.emit('join_waiting_list', user);
-    }
 
     socket.on('message', (msg) => {
       const { text, user } = msg;
-      setMessages((prevMessages) => [...prevMessages, { text, user: user }]);
+      setMessages((prevMessages) => [...prevMessages, { text, user }]);
     });
 
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [user]);
 
   console.log(messages)
 
-  const sendMessage = (e) => {
+  const sendMessage = async (e) => {
     e.preventDefault();
     if (message) {
-      socket.emit("message", { text: message, user: user });
-      setMessage('');
+      try {
+        // Make API request to append the message
+        await axios.post('http://localhost:5000/append_message', {
+          message: message,
+          user: user, // Assuming `user` is already defined and contains user details
+          conversationId: conversationId // The ID of the conversation
+        }).catch(err => console.log(err));
+
+        // Emit the message to the socket
+        socket.emit("message", { text: message, user: user, conversationId: conversationId });
+
+        // Clear the message input
+        setMessage('');
+      } catch (error) {
+        console.error("Error sending message:", error);
+        // You might want to handle the error (e.g., show a notification to the user)
+      }
     }
-  }
+  };
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
@@ -72,14 +109,14 @@ function App() {
       <div className="flex-1 overflow-hidden flex flex-col">
         <main className="flex-1 overflow-y-auto p-6">
           <div className="max-w-3xl mx-auto space-y-4">
-            { user.isMentor == false && (<div className="flex items-start space-x-2 mb-4">
+            {user.isMentor == false && (<div className="flex items-start space-x-2 mb-4">
               <div className="bg-blue-500 rounded-full p-2">
                 <MessageSquare size={24} className="text-white" />
               </div>
               <div className="bg-white rounded-lg p-3 shadow-md max-w-xs lg:max-w-md">
                 <p>Howdy! The STORM Center of Hope and Services supports individuals and families through counseling, education, and community services. How can we help you!</p>
               </div>
-            </div>) }
+            </div>)}
 
             {messages.map((msg, index) => (
               <div key={index} className={`flex items-start space-x-2 ${msg.user.id === user.id ? "flex-row-reverse space-x-reverse" : ""}`}>

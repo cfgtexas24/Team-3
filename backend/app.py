@@ -2,6 +2,10 @@ from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy.dialects.postgresql import JSONB  # Import JSONB for PostgreSQL
 import os
 
 # Initialize Flask app
@@ -23,20 +27,28 @@ db = SQLAlchemy(app)
 
 # User model representing users in the system
 
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     is_mentor = db.Column(db.Boolean, default=False)
 
+    # Store conversation IDs as an array of strings
+    conversations = db.Column(MutableList.as_mutable(ARRAY(String)), default=list)
+
     def __repr__(self):
         return f"User('{self.name}', '{self.email}', Mentor: {self.is_mentor})"
+    
+class Conversation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    messages = db.Column(MutableList.as_mutable(JSONB), default=list)  # Store messages as an array of JSONB
+
+    def __repr__(self):
+        return f"Conversation(id={self.id}, messages={self.messages})"
 
 
 # List to store user IDs that are waiting for a chat
 waiting_users = []
-
 
 @app.route('/')
 def index():
@@ -109,6 +121,112 @@ def sign_in():
         'isMentor': user.is_mentor
     }), 200
 
+@app.route('/create_conversation', methods=['POST'])
+def create_conversation():
+    """API route to create a new blank conversation record."""
+
+    data = request.get_json()
+    user_id = data.get("user_id")
+
+    # Retrieve the user
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({'error': 'User not found.'}), 404
+
+    # Create a new blank conversation
+    new_conversation = Conversation(messages=[])
+
+    # Add to the database
+    db.session.add(new_conversation)
+    db.session.commit()
+
+    # Append the new conversation ID to the user's conversations
+    user.conversations.append(str(new_conversation.id))
+
+    # Update the user in the database
+    db.session.commit()
+
+    # Respond with the new conversation's information
+    return jsonify({
+        'id': new_conversation.id,
+    }), 201
+
+@app.route('/append_conversation', methods=['POST'])
+def append_conversation():
+    """API route to append a conversation ID to a user's conversations list."""
+    data = request.get_json()
+
+    # Validate required fields
+    if not data or 'user_id' not in data or 'conversation_id' not in data:
+        return jsonify({'error': 'User ID and conversation ID are required.'}), 400
+
+    user_id = data['user_id']
+    conversation_id = data['conversation_id']
+
+    # Fetch the user by ID
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({'error': 'User not found.'}), 404
+
+    # Append the conversation ID to the user's conversations
+    user.conversations.append(str(conversation_id))
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    # Respond with the updated user's information
+    return jsonify({
+        'user_id': user.id,
+        'conversations': user.conversations,
+    }), 200
+
+
+@app.route('/append_message', methods=['POST'])
+def append_message():
+    """API route to append a message to a conversation's messages array."""
+    data = request.get_json()
+
+    print(data)
+
+    # Validate required fields
+    if not data or 'message' not in data or 'user' not in data or 'conversationId' not in data:
+        return jsonify({'error': 'Message, user, and conversationId are required.'}), 400
+
+    # Retrieve data from the request
+    message = data['message']
+    user = data['user']
+    conversation_id = data['conversationId']
+
+    print(conversation_id)
+
+    # Find the conversation by ID
+    conversation = Conversation.query.get(conversation_id)
+    if not conversation:
+        return jsonify({'error': 'Conversation not found.'}), 404
+
+    # Append the new message to the messages list
+    new_message = {
+        'text': message,
+        'user': user,
+        'conversationId': conversation_id
+    }
+
+    print("Before appending:", conversation.messages)
+    conversation.messages.append(new_message)
+    print("After appending:", conversation.messages)
+
+    # Mark the conversation as modified (if necessary)
+    db.session.add(conversation)
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    # Respond with the updated conversation's information
+    return jsonify({
+        'id': conversation.id,
+        'messages': conversation.messages,
+    }), 200
+
 
 # Event handler for new socket connection
 
@@ -126,7 +244,6 @@ def handle_connect():
 @socketio.on('message')
 def handle_message(msg):
     """Handle a general message event."""
-    print(f"Message received: {msg}")
     # Broadcast the message to all connected clients
     socketio.send(msg)
 
@@ -134,11 +251,12 @@ def handle_message(msg):
 
 
 @socketio.on('join_waiting_list')
-def handle_join_waiting_list(user):
+def handle_join_waiting_list(data):
+    print(data)
     """Handle a user joining the waiting list."""
-    if user not in waiting_users:
-        waiting_users.append(user)
-        print(f"User {user} joined the waiting list.")
+    if data not in waiting_users:
+        waiting_users.append(data)
+        print(f"User {data} joined the waiting list.")
         # Notify all clients of the updated waiting list
         print(waiting_users)
         socketio.emit('waiting_users', waiting_users)

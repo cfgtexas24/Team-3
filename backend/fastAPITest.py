@@ -14,3 +14,7 @@ async def create_mentor(mentor: Mentor, db: Session = Depends(get_db)):
 @app.get('/mentors')
 async def get_mentor(db: Session = Depends(get_db)):
     return crud.mentor_get_all(db=db)
+
+@app.get('/mentors/{mentor_id}')
+async def get_monter_by_id(mentor_id: int, db: Session = Depends(get_db)):
+    return crud.mentor_get_one(db=db, mentor_id=mentor_id)
